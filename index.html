@@ -511,8 +511,8 @@ input.ti:focus{border-color:var(--main-color);}
         <table class="dt" style="min-width:560px;">
           <thead><tr>
             <th style="width:100px">자산구분</th>
-            <th style="width:110px">대분류</th>
             <th style="width:110px">중분류</th>
+            <th style="width:110px">소분류</th>
             <th>종목(내용)</th>
             <th style="width:130px">금액 (원)</th>
             <th style="width:44px">삭제</th>
@@ -1296,8 +1296,8 @@ function rAs(){
   d.cashDetails.forEach((r,i)=>{
     cT.innerHTML+=`<tr>
     <td><select style="background:${cc(d.typeCats,r.type)};border-radius:6px;border:none;outline:none;padding:3px;width:100%;font-weight:700;font-family:'Poor Story',cursive;" onchange="gAsD().cashDetails[${i}].type=this.value;sAs();rAs();">${getCatOptionsHtml(d.typeCats,r.type)}</select></td>
-    <td><select style="background:${cc(d.nsaCats,r.mc)};border-radius:6px;border:none;outline:none;padding:3px;width:100%;font-weight:700;font-family:'Poor Story',cursive;" onchange="gAsD().cashDetails[${i}].mc=this.value;sAs();rAs();">${getCatOptionsHtml(d.nsaCats,r.mc)}</select></td>
     <td><select style="background:${cc(d.midCats,r.bc)};border-radius:6px;border:none;outline:none;padding:3px;width:100%;font-weight:700;font-family:'Poor Story',cursive;" onchange="gAsD().cashDetails[${i}].bc=this.value;sAs();rAs();">${getCatOptionsHtml(d.midCats,r.bc)}</select></td>
+    <td><select style="background:${cc(d.subs,r.sc)};border-radius:6px;border:none;outline:none;padding:3px;width:100%;font-weight:700;font-family:'Poor Story',cursive;" onchange="gAsD().cashDetails[${i}].sc=this.value;sAs();rAs();">${getCatOptionsHtml(d.subs,r.sc)}</select></td>
     <td><input value="${r.tk||""}" oninput="gAsD().cashDetails[${i}].tk=this.value;sAs();"></td>
     <td><input value="${fmtStr(r.amt)}" style="text-align:right;" oninput="gAsD().cashDetails[${i}].amt=fmtInp(this);sAs();updateAsTotals();"></td>
     <td style="text-align:center;"><button class="bsm" onclick="gAsD().cashDetails.splice(${i},1);sAs();rAs();">✕</button></td></tr>`;
@@ -1326,7 +1326,7 @@ function rAs(){
 }
 window.aCash=()=>{
   let defType = gAsD().typeCats.length > 0 ? gAsD().typeCats[0].name : "";
-  gAsD().cashDetails.push({type:defType,mc:"",bc:"",tk:"",amt:""});sAs();rAs();
+  gAsD().cashDetails.push({type:defType,bc:"",sc:"",tk:"",amt:""});sAs();rAs();
 };
 window.aAD=()=>{
   let defType = gAsD().typeCats.length > 0 ? gAsD().typeCats[gAsD().typeCats.length-1].name : "";
