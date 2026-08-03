@@ -128,7 +128,7 @@ input.ti:focus{border-color:var(--main-color);}
 .dt tbody td input{width:100%;background:transparent;border:none;font-family:"Poor Story",cursive;font-size:13px;color:var(--text-dark);outline:none;padding:2px 0;}
 .dt tbody td input:focus{background:#fff9c4;border-radius:4px;padding:2px 4px;}
 .dt tbody td select{background:transparent;border:none;font-family:"Poor Story",cursive;font-size:12px;color:var(--text-dark);outline:none;cursor:pointer; width:100%;}
-.arb{width:100%;padding:10px;background:var(--input-bg);border:none;border-top:1.5px dashed var(--sub-color);color:var(--text-muted);font-family:"Poor Story",cursive;font-size:13px;cursor:pointer;}
+.arb{width:100%;padding:10px;background:var(--input-bg);border:none;border-top:1.5px dashed var(--sub-color);color:var(--text-muted);font-family:"Poor Story",cursive;font-size:13px;cursor:pointer; transition:0.2s;}
 .arb:hover{background:var(--sub-bg);color:var(--main-color);}
 .stit{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
 .stit h3{font-size:13px;color:var(--text-muted);}
@@ -498,11 +498,9 @@ input.ti:focus{border-color:var(--main-color);}
       </div>
     </div>
 
-    <div class="ws" style="margin-top:16px;">
-      <div class="wt">💰 현금 및 저축 자산
-        <button class="bsm" onclick="aCash()" style="margin-left:auto;">＋ 자산 추가</button>
-      </div>
-      <div style="overflow-x:auto;">
+    <div style="margin-top:16px;">
+      <div class="stit"><h3>💰 현금 및 저축 자산</h3></div>
+      <div class="dtw" style="overflow-x:auto;">
         <table class="dt" style="min-width:560px;">
           <thead><tr>
             <th style="width:130px">대분류</th>
@@ -513,14 +511,13 @@ input.ti:focus{border-color:var(--main-color);}
           </tr></thead>
           <tbody id="cashtb"></tbody>
         </table>
+        <button class="arb" onclick="aCash()">＋ 현금/저축 자산 추가</button>
       </div>
     </div>
 
-    <div class="ws" style="margin-top:16px;">
-      <div class="wt">📈 주식 상세 종목
-        <button class="bsm" onclick="aAD()" style="margin-left:auto;">＋ 종목 추가</button>
-      </div>
-      <div style="overflow-x:auto;">
+    <div style="margin-top:16px;">
+      <div class="stit"><h3>📈 주식 상세 종목</h3></div>
+      <div class="dtw" style="overflow-x:auto;">
         <table class="dt" style="min-width:680px;">
           <thead><tr>
             <th style="width:110px">대분류</th>
@@ -533,19 +530,18 @@ input.ti:focus{border-color:var(--main-color);}
           </tr></thead>
           <tbody id="asdtb"></tbody>
         </table>
+        <button class="arb" onclick="aAD()">＋ 주식 종목 추가</button>
       </div>
     </div>
 
-    <!-- 부채 테이블 추가 -->
-    <div class="ws" style="margin-top:16px; border:2px solid #ffb3ba; background:#fff9f9;">
-      <div class="wt" style="color:#e8453c;">⚠️ 부채 (대출) 내역
-        <button class="bsm" onclick="aLiab()" style="margin-left:auto; background:#ffe0e0; color:#e8453c;">＋ 부채 추가</button>
-      </div>
-      <div style="overflow-x:auto;">
+    <div style="margin-top:16px;">
+      <div class="stit"><h3 style="color:#e8453c;">⚠️ 부채 (대출) 내역</h3></div>
+      <div class="dtw" style="overflow-x:auto; border-color:#ffb3ba;">
         <table class="dt" style="min-width:400px;">
           <thead><tr style="background:#fff0f0;"><th style="color:#e8453c;">대출/부채 내용</th><th style="width:150px; color:#e8453c;">금액 (원)</th><th style="width:44px">삭제</th></tr></thead>
           <tbody id="liabtb"></tbody>
         </table>
+        <button class="arb" onclick="aLiab()" style="background:#fff9f9; color:#e8453c; border-top-color:#ffb3ba;">＋ 부채 추가</button>
       </div>
     </div>
   </div>
@@ -1180,26 +1176,26 @@ function rNVTotal(){
   ensureArr(d.rows).forEach(r => { if(!r.exclude) autoSum += (parseInt(String(r.pr).replace(/[^0-9]/g, '')) || 0); });
   d.manualTotal = String(autoSum); sNv();
 
-  document.getElementById("nvtotal").textContent="₩"+fmt(autoSum);
   const pills = document.querySelectorAll(".nv-auto-sum-disp");
   pills.forEach(p => p.textContent = "총 저축/투자 ₩" + fmt(autoSum));
   
   const w=document.getElementById("nvwrap");w.innerHTML="";
   w.innerHTML=`
-  <div class="nvwcard">
-    <div class="nvwcard-hd"><h3>월간 전체 기록</h3>
+  <div>
+    <div class="stit">
+      <h3>📈 월간 저축/투자 기록</h3>
       <div style="margin-left:auto; display:flex; align-items:center; gap:6px;">
-        <button class="bsm" onclick="gNvD(${nvY},${nvM}).rows.sort((a,b)=>(parseInt((a.date||'').replace(/[^0-9]/g,''))||0)-(parseInt((b.date||'').replace(/[^0-9]/g,''))||0)); sNv(); rNVTotal();">⬇️ 정렬</button>
-        <span style="font-size:12px; font-weight:700; color:var(--text-muted);">월간 자동 합계:</span>
+        <span style="font-size:12px; font-weight:700; color:var(--text-muted);">자동 합계:</span>
         <span class="pill nv-auto-sum-disp" style="background:var(--sub-bg); color:var(--main-color);">₩${fmt(autoSum)}</span>
+        <button class="bsm" onclick="gNvD(${nvY},${nvM}).rows.sort((a,b)=>(parseInt((a.date||'').replace(/[^0-9]/g,''))||0)-(parseInt((b.date||'').replace(/[^0-9]/g,''))||0)); sNv(); rNVTotal();">⬇️ 정렬</button>
       </div>
-      <button class="bsm" style="margin-left:8px;" onclick="gNvD(${nvY},${nvM}).rows.push({cat:(nvCats[0]?nvCats[0].name:''),tk:'',qty:'',pr:'',date:'',exclude:false}); sNv(); rNVTotal();">＋ 추가</button>
     </div>
-    <div style="overflow-x:auto;">
+    <div class="dtw" style="overflow-x:auto;">
       <table class="dt" style="min-width:620px;">
         <thead><tr><th style="width:70px">날짜</th><th style="width:110px">분류</th><th>종목명</th><th style="width:60px">주수</th><th style="width:130px">금액(원)</th><th style="width:40px">제외</th><th style="width:44px">삭제</th></tr></thead>
         <tbody id="nvtb"></tbody>
       </table>
+      <button class="arb" onclick="gNvD(${nvY},${nvM}).rows.push({cat:(nvCats[0]?nvCats[0].name:''),tk:'',qty:'',pr:'',date:'',exclude:false}); sNv(); rNVTotal();">＋ 저축/투자 항목 추가</button>
     </div>
   </div>`;
   
