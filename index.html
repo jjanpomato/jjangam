@@ -202,12 +202,11 @@ input.ti:focus{border-color:var(--main-color);}
 
 <div class="app-header">
   <div class="header-actions">
-    <button onclick="hardReset()" style="padding:4px 8px; background:var(--sub-bg); border:1.5px solid var(--sub-color); color:var(--main-color); border-radius:8px; font-family:'Poor Story',cursive; font-size:11px; font-weight:700; cursor:pointer;">🔥 초기화</button>
     <button onclick="copySyncLink()" style="padding:4px 8px; background:#fff; border:1.5px solid var(--main-color); color:var(--main-color); border-radius:8px; font-family:'Poor Story',cursive; font-size:11px; font-weight:700; cursor:pointer;">🔗 커플 연동</button>
   </div>
   <div class="header-title-row">
     <span style="font-size:28px;">🍅🥔</span>
-    <h1>짠포마토의 기록 <span class="ver">v7.0 (Clean Build)</span></h1>
+    <h1>짠포마토의 기록 <span class="ver">v1.0</span></h1>
   </div>
   <div class="profile-switcher">
     <button id="prof_zzanto" class="prof-btn active" onclick="switchProfile('zzanto')">🍅 짠토</button>
@@ -791,20 +790,6 @@ window.copySyncLink = function() {
   prompt("아래 링크를 복사하세요:", syncUrl);
 }
 
-window.hardReset = function() {
-  if(activeProfile === 'zzanpomato') { alert("짠포마토 모드에서는 초기화할 수 없습니다. 짠토나 짠감 프로필로 이동해주세요."); return; }
-  if(!confirm(`정말 [${activeProfile === 'zzanto' ? '🍅 짠토' : '🥔 짠감'}]의 데이터를 전부 지울까요?\n(상대방 데이터는 유지됩니다)`)) return;
-  
-  appData[activeProfile] = { iD:{}, eD:{}, lgD:{}, nvD:{}, scD:{}, asD:{main:{details:[], cashDetails:[], liabilities:[]}}, iCats:[], eCats:[], nvCats:[] };
-  if (isFirebaseLoaded) {
-    db.ref("users/" + mySyncKey + "/" + activeProfile).set(appData[activeProfile]).then(() => {
-      alert("초기화 완료 (새로고침 됩니다)"); location.reload();
-    });
-  } else {
-    location.reload();
-  }
-};
-
 /* ================= 프로필 & 탭 스위치 ================= */
 function switchProfile(p) {
   activeProfile = p;
@@ -883,7 +868,7 @@ const sSc=()=>saveToFB("scD", scD);
 const sAs=()=>saveToFB("asD", asD);
 
 /* ================= 개인 탭 공통 로직 ================= */
-const _d = new Date(); const CUR_Y = _d.getFullYear(); const CUR_M = _d.getMonth()+1;
+const _d = new Date(); const CUR_Y = 2026; const CUR_M = _d.getMonth()+1;
 let iY=CUR_Y,iM=CUR_M, eY=CUR_Y,eM=CUR_M, nvY=CUR_Y,nvM=CUR_M, scY=CUR_Y,scM=CUR_M, lgY=CUR_Y,lgM=CUR_M, rY=CUR_Y, jpY=CUR_Y, jpM=CUR_M;
 let iFil_state="전체", eFil_state="전체";
 let scWk=0, scRat="1/1"; 
