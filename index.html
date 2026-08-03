@@ -136,9 +136,9 @@ input.ti:focus{border-color:var(--main-color);}
 .ws{background:#fff;border:2px solid var(--sub-color);border-radius:16px;padding:16px;box-shadow:0 3px 14px rgba(0,0,0,.05);}
 .wt{font-size:14px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
 
-/* 양옆 배치용 Grid (자산 및 부채 탭) */
-.asset-table-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; align-items: start; }
-@media(max-width: 900px) { .asset-table-grid { grid-template-columns: 1fr; } }
+/* 양옆 배치용 Grid (자산 및 부채 탭 차트) */
+.asset-chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+@media(max-width: 700px) { .asset-chart-grid { grid-template-columns: 1fr; } }
 
 /* 개인 영역용 컬럼 */
 .as-goal-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;}
@@ -268,7 +268,7 @@ input.ti:focus{border-color:var(--main-color);}
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;" id="lggoalrow">
       <div class="as-goal-box">
         <div class="as-goal-label">목표 예산 (지출 기준)</div>
-        <input class="as-goal-input" id="lggoal" value="500000" oninput="fmtInp(this); rLedger();">
+        <input class="as-goal-input" id="lggoal" placeholder="예: 500,000" oninput="fmtInp(this); updateLgGoal(this);">
       </div>
       <div class="as-goal-box">
         <div class="as-goal-label">이번달 잔액</div>
@@ -455,18 +455,19 @@ input.ti:focus{border-color:var(--main-color);}
       </div>
     </div>
 
-    <div class="ag">
-      <div class="ws">
+    <!-- 차트를 양옆으로 나란히 배치하는 그리드 -->
+    <div class="asset-chart-grid">
+      <div class="ws" style="margin-bottom:0;">
         <div class="wt">📊 총 자산 비율 (자산구분 기준)</div>
-        <div class="crow" style="margin-bottom:12px;">
+        <div class="crow">
           <div class="dw"><canvas id="asdc1" width="140" height="140"></canvas>
             <div class="dc"><div class="dl2">총 자산</div><div class="dv" id="asdv1">₩0</div></div></div>
           <div class="ll2" id="asl1"></div>
         </div>
       </div>
-      <div class="ws">
+      <div class="ws" style="margin-bottom:0;">
         <div class="wt">📊 주식/투자 비율 (대분류 기준)</div>
-        <div class="crow" style="margin-bottom:12px;">
+        <div class="crow">
           <div class="dw"><canvas id="asdc2" width="140" height="140"></canvas>
             <div class="dc"><div class="dl2">주식/투자</div><div class="dv" id="asdv2">₩0</div></div></div>
           <div class="ll2" id="asl2"></div>
@@ -477,7 +478,13 @@ input.ti:focus{border-color:var(--main-color);}
     <div class="cm">
       <h3>🏷 분류 관리 (자산 탭 전용)</h3>
       <div id="cat_mgmt" style="display:block; margin-top:10px; padding-top:10px; border-top:1px dashed var(--sub-color);">
-        <div class="stit">대분류 관리</div>
+        <div class="stit">자산구분 관리</div>
+        <div class="cw" id="typechips"></div>
+        <div class="car">
+          <div class="pr" id="typepal"></div>
+          <input class="cni" id="typecni" placeholder="분류명 입력"><button class="cac" onclick="addTypeCatUI()">＋ 자산구분 추가</button>
+        </div>
+        <div class="stit" style="margin-top:16px;">대분류 관리</div>
         <div class="cw" id="nsachips"></div>
         <div class="car">
           <div class="pr" id="nsapal"></div>
@@ -498,52 +505,45 @@ input.ti:focus{border-color:var(--main-color);}
       </div>
     </div>
 
-    <!-- 양옆 배치를 위한 그리드 컨테이너 -->
-    <div class="asset-table-grid">
-      
-      <!-- 현금 및 저축 표 -->
-      <div class="ws" style="margin-top:0;">
-        <div class="stit"><h3>💰 현금 및 저축 자산</h3></div>
-        <div class="dtw" style="overflow-x:auto; -webkit-overflow-scrolling: touch;">
-          <table class="dt" style="min-width:480px;">
-            <thead><tr>
-              <th style="width:90px">자산구분</th>
-              <th style="width:100px">대분류</th>
-              <th style="width:100px">중분류</th>
-              <th>종목(내용)</th>
-              <th style="width:100px">금액 (원)</th>
-              <th style="width:40px">삭제</th>
-            </tr></thead>
-            <tbody id="cashtb"></tbody>
-          </table>
-          <button class="arb" onclick="aCash()">＋ 현금/저축 자산 항목 추가</button>
-        </div>
+    <div class="ws" style="margin-top:16px;">
+      <div class="stit"><h3>💰 현금 및 저축 자산</h3></div>
+      <div class="dtw" style="overflow-x:auto;">
+        <table class="dt" style="min-width:560px;">
+          <thead><tr>
+            <th style="width:100px">자산구분</th>
+            <th style="width:110px">대분류</th>
+            <th style="width:110px">중분류</th>
+            <th>종목(내용)</th>
+            <th style="width:130px">금액 (원)</th>
+            <th style="width:44px">삭제</th>
+          </tr></thead>
+          <tbody id="cashtb"></tbody>
+        </table>
+        <button class="arb" onclick="aCash()">＋ 현금/저축 자산 항목 추가</button>
       </div>
-
-      <!-- 주식 상세 종목 표 -->
-      <div class="ws" style="margin-top:0;">
-        <div class="stit"><h3>📈 주식 상세 종목</h3></div>
-        <div class="dtw" style="overflow-x:auto; -webkit-overflow-scrolling: touch;">
-          <table class="dt" style="min-width:600px;">
-            <thead><tr>
-              <th style="width:90px">자산구분</th>
-              <th style="width:90px">대분류</th>
-              <th style="width:90px">중분류</th>
-              <th style="width:90px">소분류</th>
-              <th>종목</th>
-              <th style="width:50px">주수</th>
-              <th style="width:100px">금액 (원)</th>
-              <th style="width:40px">삭제</th>
-            </tr></thead>
-            <tbody id="asdtb"></tbody>
-          </table>
-          <button class="arb" onclick="aAD()">＋ 주식 종목 추가</button>
-        </div>
-      </div>
-
     </div>
 
-    <div class="ws" style="margin-top:0; border-color:#ffb3ba;">
+    <div class="ws" style="margin-top:16px;">
+      <div class="stit"><h3>📈 주식 상세 종목</h3></div>
+      <div class="dtw" style="overflow-x:auto;">
+        <table class="dt" style="min-width:680px;">
+          <thead><tr>
+            <th style="width:100px">자산구분</th>
+            <th style="width:110px">대분류</th>
+            <th style="width:110px">중분류</th>
+            <th style="width:110px">소분류</th>
+            <th>종목</th>
+            <th style="width:55px">주수</th>
+            <th style="width:130px">금액 (원)</th>
+            <th style="width:44px">삭제</th>
+          </tr></thead>
+          <tbody id="asdtb"></tbody>
+        </table>
+        <button class="arb" onclick="aAD()">＋ 주식 종목 추가</button>
+      </div>
+    </div>
+
+    <div class="ws" style="margin-top:16px; border-color:#ffb3ba;">
       <div class="stit"><h3 style="color:#e8453c;">⚠️ 부채 (대출) 내역</h3></div>
       <div class="dtw" style="overflow-x:auto; border-color:#ffb3ba;">
         <table class="dt" style="min-width:400px;">
@@ -879,7 +879,7 @@ let iFil_state="전체", eFil_state="전체";
 let scWk=0, scRat="1/1"; 
 
 const PAL=["#ffb3ba","#ffdfba","#ffffba","#baffc9","#bae1ff","#f4a7b9","#c9b1d9","#a8d8ea","#f9d5a7","#b5ead7","#ffdac1","#e2f0cb","#b5d5c5","#d4a5a5","#c7ceea","#fcdfff","#d0f0c0","#ffc0cb","#e6e6fa","#fffacd"];
-let selP={i:PAL[0], e:PAL[0], nv:PAL[0], nsa:PAL[0], mid:PAL[0], sub:PAL[0]};
+let selP={i:PAL[0], e:PAL[0], nv:PAL[0], type:PAL[0], nsa:PAL[0], mid:PAL[0], sub:PAL[0]};
 
 function checkDefaults() {
   const defI = [{name:"월급",color:"#ffb3ba"},{name:"부수입",color:"#baffc9"}];
@@ -888,7 +888,7 @@ function checkDefaults() {
   if(!eCats || eCats.length===0) { eCats = defE; saveToFB("eCats", eCats); }
   if(!nvCats || nvCats.length===0) { nvCats = [{name:"투자",color:"#ffb3ba"}]; saveToFB("nvCats", nvCats); }
   
-  if(!asD.main) asD.main = { goal: "100000000", details:[], cashDetails:[], liabilities:[], nsaCats:[{name:"자산",color:"#ffb3ba"}], midCats:[], subs:[] };
+  if(!asD.main) asD.main = { goal: "100000000", details:[], cashDetails:[], liabilities:[], nsaCats:[{name:"시장지수",color:"#ffb3ba"}], midCats:[], subs:[], typeCats:[{name:"현금성자산",color:"#bae1ff"}, {name:"저축",color:"#baffc9"}, {name:"투자자산",color:"#ffb3ba"}] };
   asD.main.details = ensureArr(asD.main.details);
   asD.main.cashDetails = ensureArr(asD.main.cashDetails);
   asD.main.liabilities = ensureArr(asD.main.liabilities);
@@ -901,7 +901,7 @@ function gNvD(y,m){ if(!nvD[y])nvD[y]={}; if(!nvD[y][m]){nvD[y][m]={total:"",row
 function gAsD(){ 
   checkDefaults(); 
   let d = asD.main;
-  // 에러 방지: 데이터가 깨져있어도 기본 배열을 강제로 넣음
+  if(!d.typeCats || !Array.isArray(d.typeCats)) d.typeCats = [{name:"현금성자산",color:"#bae1ff"}, {name:"저축",color:"#baffc9"}, {name:"투자자산",color:"#ffb3ba"}];
   if(!d.nsaCats || !Array.isArray(d.nsaCats)) d.nsaCats = [{name:"시장지수",color:"#ffb3ba"}];
   if(!d.midCats || !Array.isArray(d.midCats)) d.midCats = [];
   if(!d.subs || !Array.isArray(d.subs)) d.subs = [];
@@ -910,7 +910,6 @@ function gAsD(){
 
 function bPal(tp){
   const row=document.getElementById(tp+"pal");if(!row)return;row.innerHTML="";
-  // 색상 20개 전체 렌더링
   PAL.forEach(c=>{
     const d=document.createElement("div");d.className="pd";d.style.background=c;if(c===selP[tp])d.classList.add("sel");
     d.onclick=()=>{selP[tp]=c;row.querySelectorAll(".pd").forEach(x=>x.classList.remove("sel"));d.classList.add("sel");};
@@ -972,6 +971,16 @@ function buildYM(yid,mid,cy,cm){
 /* ================= 0: 가계부 탭 ================= */
 function updateLgSalary(v){gLgData(lgY,lgM).salary=v;sLg();rLedger();}
 function updateLgMemo(k,v){gLgData(lgY,lgM).memos=gLgData(lgY,lgM).memos||{};gLgData(lgY,lgM).memos[k]=v;sLg();}
+function updateLgGoal(el){
+  gLgData(lgY,lgM).goal = el.value.replace(/[^0-9]/g,'');
+  sLg();
+  const ed=gED(lgY,lgM);
+  const eT=ed.fixed.concat(ed.dated).reduce((s,r)=>s+(+r.amount||0),0);
+  const goal = +(gLgData(lgY,lgM).goal) || 0;
+  const w=document.getElementById("lgwarn");
+  if(eT>goal){w.innerHTML="🚨 목표 초과!";w.style.color="var(--main-color)";}else{w.innerHTML="✅ 안전지대";w.style.color="#2e7d32";}
+}
+
 function rLedger(){
   checkDefaults();
   lgY=parseInt(document.getElementById("lgy").value)||CUR_Y; lgM=parseInt(document.getElementById("lgm").value)||CUR_M;
@@ -979,6 +988,13 @@ function rLedger(){
   const iT=id.fixed.concat(id.dated).reduce((s,r)=>s+(+r.amount||0),0);
   const eT=ed.fixed.concat(ed.dated).reduce((s,r)=>s+(+r.amount||0),0);
   const nT=+(nd.manualTotal)||0; const sal=+ld.salary||0;
+
+  // 목표 예산 세팅 (입력 중에 커서가 튀지 않도록 포커스가 없을 때만 값 채우기)
+  const goalVal = ld.goal !== undefined ? ld.goal : 500000;
+  if (document.activeElement !== document.getElementById("lggoal")) {
+      document.getElementById("lggoal").value = fmtStr(goalVal);
+  }
+  const goal = +String(goalVal).replace(/[^0-9]/g,'')||0;
   
   drawDonut("lgdc1", [{name:"월급/수당",amount:sal,color:"#f4a7b9"},{name:"부수입",amount:iT,color:"#baffc9"}], "lgdv1", "lgl1");
   drawDonut("lgdc2", [{name:"지출",amount:eT,color:"#bae1ff"},{name:"저축/투자",amount:nT,color:"#ffffba"}], "lgdv2", "lgl2");
@@ -1004,7 +1020,7 @@ function rLedger(){
   row("잔액", bal, "bal", false, bal<0?'over':'safe');
   
   document.getElementById("lgbal").textContent="₩"+fmt(bal);
-  const goal=+document.getElementById("lggoal").value.replace(/[^0-9]/g,'')||0;
+  
   const w=document.getElementById("lgwarn");
   if(eT>goal){w.innerHTML="🚨 목표 초과!";w.style.color="var(--main-color)";}else{w.innerHTML="✅ 안전지대";w.style.color="#2e7d32";}
   
@@ -1239,14 +1255,14 @@ window.updateAsTotals = () => {
   d.details.forEach(r=>{ 
     let amt = (+r.amt||0);
     assets += amt; 
-    let type = r.type || "투자자산";
+    let type = r.type || (d.typeCats.length > 0 ? d.typeCats[0].name : "미지정");
     typeAgg[type] = (typeAgg[type]||0) + amt;
     invAgg[r.mc||"미지정"] = (invAgg[r.mc||"미지정"]||0) + amt; 
   });
   d.cashDetails.forEach(r=>{ 
     let amt = (+r.amt||0);
     assets += amt; 
-    let type = r.type || "현금성자산";
+    let type = r.type || (d.typeCats.length > 0 ? d.typeCats[0].name : "미지정");
     typeAgg[type] = (typeAgg[type]||0) + amt;
   });
   d.liabilities.forEach(r=>{ liabs+=(+r.amt||0); });
@@ -1256,8 +1272,7 @@ window.updateAsTotals = () => {
   document.getElementById("as_tot_liabs").textContent="₩"+fmt(liabs);
   document.getElementById("as_net_worth").textContent="₩"+fmt(netWorth);
 
-  const typeColors = {"저축":"#baffc9", "현금성자산":"#bae1ff", "투자자산":"#ffb3ba", "미지정":"#ccc"};
-  drawDonut("asdc1", Object.keys(typeAgg).map(k=>({name:k,amount:typeAgg[k],color:typeColors[k]||"#ccc"})), "asdv1", "asl1");
+  drawDonut("asdc1", Object.keys(typeAgg).map(k=>({name:k,amount:typeAgg[k],color:cc(d.typeCats,k)})), "asdv1", "asl1");
   drawDonut("asdc2", Object.keys(invAgg).map(k=>({name:k,amount:invAgg[k],color:cc(d.nsaCats,k)})), "asdv2", "asl2");
 };
 
@@ -1265,18 +1280,17 @@ function rAs(){
   const d = gAsD();
   updateAsTotals(); 
 
-  bPal("nsa");bPal("mid");bPal("sub");
-  ["nsa","mid","sub"].forEach(tp=>{
-    const arr = tp==="nsa"?d.nsaCats:tp==="mid"?d.midCats:d.subs;
+  bPal("type"); bPal("nsa"); bPal("mid"); bPal("sub");
+  ["type","nsa","mid","sub"].forEach(tp=>{
+    const arr = tp==="type"?d.typeCats:tp==="nsa"?d.nsaCats:tp==="mid"?d.midCats:d.subs;
     const w=document.getElementById(tp+"chips");if(!w)return;w.innerHTML="";
-    arr.forEach((c,i)=>{ w.innerHTML+=`<div class="chip" style="background:${c.color}">${c.name}<span class="xd" onclick="gAsD().${tp==='nsa'?'nsaCats':tp==='mid'?'midCats':'subs'}.splice(${i},1);sAs();rAs();">✕</span></div>`; });
+    arr.forEach((c,i)=>{ w.innerHTML+=`<div class="chip" style="background:${c.color}">${c.name}<span class="xd" onclick="gAsD().${tp==='type'?'typeCats':tp==='nsa'?'nsaCats':tp==='mid'?'midCats':'subs'}.splice(${i},1);sAs();rAs();">✕</span></div>`; });
   });
 
   const cT=document.getElementById("cashtb");cT.innerHTML="";
   d.cashDetails.forEach((r,i)=>{
-    let typeOpts = `<option value="저축" ${r.type==='저축'?'selected':''}>저축</option><option value="현금성자산" ${!r.type||r.type==='현금성자산'?'selected':''}>현금성자산</option><option value="투자자산" ${r.type==='투자자산'?'selected':''}>투자자산</option>`;
     cT.innerHTML+=`<tr>
-    <td><select style="background:var(--input-bg);border:1px solid rgba(0,0,0,0.1);outline:none;border-radius:6px;padding:3px;width:100%;font-family:'Poor Story',cursive;" onchange="gAsD().cashDetails[${i}].type=this.value;sAs();updateAsTotals();">${typeOpts}</select></td>
+    <td><select style="background:${cc(d.typeCats,r.type)};border-radius:6px;border:none;outline:none;padding:3px;width:100%;font-weight:700;font-family:'Poor Story',cursive;" onchange="gAsD().cashDetails[${i}].type=this.value;sAs();rAs();">${getCatOptionsHtml(d.typeCats,r.type)}</select></td>
     <td><select style="background:${cc(d.nsaCats,r.mc)};border-radius:6px;border:none;outline:none;padding:3px;width:100%;font-weight:700;font-family:'Poor Story',cursive;" onchange="gAsD().cashDetails[${i}].mc=this.value;sAs();rAs();">${getCatOptionsHtml(d.nsaCats,r.mc)}</select></td>
     <td><select style="background:${cc(d.midCats,r.bc)};border-radius:6px;border:none;outline:none;padding:3px;width:100%;font-weight:700;font-family:'Poor Story',cursive;" onchange="gAsD().cashDetails[${i}].bc=this.value;sAs();rAs();">${getCatOptionsHtml(d.midCats,r.bc)}</select></td>
     <td><input value="${r.tk||""}" oninput="gAsD().cashDetails[${i}].tk=this.value;sAs();"></td>
@@ -1286,9 +1300,8 @@ function rAs(){
 
   const aT=document.getElementById("asdtb");aT.innerHTML="";
   d.details.forEach((r,i)=>{
-    let typeOpts2 = `<option value="저축" ${r.type==='저축'?'selected':''}>저축</option><option value="현금성자산" ${r.type==='현금성자산'?'selected':''}>현금성자산</option><option value="투자자산" ${!r.type||r.type==='투자자산'?'selected':''}>투자자산</option>`;
     aT.innerHTML+=`<tr>
-    <td><select style="background:var(--input-bg);border:1px solid rgba(0,0,0,0.1);outline:none;border-radius:6px;padding:3px;width:100%;font-family:'Poor Story',cursive;" onchange="gAsD().details[${i}].type=this.value;sAs();updateAsTotals();">${typeOpts2}</select></td>
+    <td><select style="background:${cc(d.typeCats,r.type)};border-radius:6px;border:none;outline:none;padding:3px;width:100%;font-weight:700;font-family:'Poor Story',cursive;" onchange="gAsD().details[${i}].type=this.value;sAs();rAs();">${getCatOptionsHtml(d.typeCats,r.type)}</select></td>
     <td><select style="background:${cc(d.nsaCats,r.mc)};border-radius:6px;border:none;outline:none;padding:3px;width:100%;font-weight:700;font-family:'Poor Story',cursive;" onchange="gAsD().details[${i}].mc=this.value;sAs();rAs();">${getCatOptionsHtml(d.nsaCats,r.mc)}</select></td>
     <td><select style="background:${cc(d.midCats,r.bc)};border-radius:6px;border:none;outline:none;padding:3px;width:100%;font-weight:700;font-family:'Poor Story',cursive;" onchange="gAsD().details[${i}].bc=this.value;sAs();rAs();">${getCatOptionsHtml(d.midCats,r.bc)}</select></td>
     <td><select style="background:${cc(d.subs,r.sc)};border-radius:6px;border:none;outline:none;padding:3px;width:100%;font-weight:700;font-family:'Poor Story',cursive;" onchange="gAsD().details[${i}].sc=this.value;sAs();rAs();">${getCatOptionsHtml(d.subs,r.sc)}</select></td>
@@ -1306,10 +1319,17 @@ function rAs(){
     <td style="text-align:center;"><button class="bsm" onclick="gAsD().liabilities.splice(${i},1);sAs();rAs();">✕</button></td></tr>`;
   });
 }
-window.aCash=()=>{gAsD().cashDetails.push({type:"현금성자산",mc:"",bc:"",tk:"",amt:""});sAs();rAs();};
-window.aAD=()=>{gAsD().details.push({type:"투자자산",mc:"",bc:"",sc:"",tk:"",qty:"",amt:""});sAs();rAs();};
+window.aCash=()=>{
+  let defType = gAsD().typeCats.length > 0 ? gAsD().typeCats[0].name : "";
+  gAsD().cashDetails.push({type:defType,mc:"",bc:"",tk:"",amt:""});sAs();rAs();
+};
+window.aAD=()=>{
+  let defType = gAsD().typeCats.length > 0 ? gAsD().typeCats[gAsD().typeCats.length-1].name : "";
+  gAsD().details.push({type:defType,mc:"",bc:"",sc:"",tk:"",qty:"",amt:""});sAs();rAs();
+};
 window.aLiab=()=>{gAsD().liabilities.push({tk:"",amt:""});sAs();rAs();};
 
+window.addTypeCatUI=()=>{const name=document.getElementById("typecni").value.trim(); if(name){gAsD().typeCats.push({name,color:selP.type}); document.getElementById("typecni").value=""; sAs(); rAs();}};
 window.addNsaCatUI=()=>{const name=document.getElementById("nsacni").value.trim(); if(name){gAsD().nsaCats.push({name,color:selP.nsa}); document.getElementById("nsacni").value=""; sAs(); rAs();}};
 window.addMidCatUI=()=>{const name=document.getElementById("midcni").value.trim(); if(name){gAsD().midCats.push({name,color:selP.mid}); document.getElementById("midcni").value=""; sAs(); rAs();}};
 window.addSubCatUI=()=>{const name=document.getElementById("subcni").value.trim(); if(name){gAsD().subs.push({name,color:selP.sub}); document.getElementById("subcni").value=""; sAs(); rAs();}};
