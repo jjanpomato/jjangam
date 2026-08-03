@@ -3,6 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<!-- 앱 아이콘 및 전체화면 테마 설정 -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#e8453c">
+<link rel="icon" type="image/png" href="여기에_아이콘_이미지_주소를_넣으세요.png">
+<link rel="apple-touch-icon" href="여기에_아이콘_이미지_주소를_넣으세요.png">
+
 <title>🍅🥔 짠포마토의 기록</title>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
@@ -1296,8 +1305,8 @@ function rAs(){
   d.cashDetails.forEach((r,i)=>{
     cT.innerHTML+=`<tr>
     <td><select style="background:${cc(d.typeCats,r.type)};border-radius:6px;border:none;outline:none;padding:3px;width:100%;font-weight:700;font-family:'Poor Story',cursive;" onchange="gAsD().cashDetails[${i}].type=this.value;sAs();rAs();">${getCatOptionsHtml(d.typeCats,r.type)}</select></td>
+    <td><select style="background:${cc(d.nsaCats,r.mc)};border-radius:6px;border:none;outline:none;padding:3px;width:100%;font-weight:700;font-family:'Poor Story',cursive;" onchange="gAsD().cashDetails[${i}].mc=this.value;sAs();rAs();">${getCatOptionsHtml(d.nsaCats,r.mc)}</select></td>
     <td><select style="background:${cc(d.midCats,r.bc)};border-radius:6px;border:none;outline:none;padding:3px;width:100%;font-weight:700;font-family:'Poor Story',cursive;" onchange="gAsD().cashDetails[${i}].bc=this.value;sAs();rAs();">${getCatOptionsHtml(d.midCats,r.bc)}</select></td>
-    <td><select style="background:${cc(d.subs,r.sc)};border-radius:6px;border:none;outline:none;padding:3px;width:100%;font-weight:700;font-family:'Poor Story',cursive;" onchange="gAsD().cashDetails[${i}].sc=this.value;sAs();rAs();">${getCatOptionsHtml(d.subs,r.sc)}</select></td>
     <td><input value="${r.tk||""}" oninput="gAsD().cashDetails[${i}].tk=this.value;sAs();"></td>
     <td><input value="${fmtStr(r.amt)}" style="text-align:right;" oninput="gAsD().cashDetails[${i}].amt=fmtInp(this);sAs();updateAsTotals();"></td>
     <td style="text-align:center;"><button class="bsm" onclick="gAsD().cashDetails.splice(${i},1);sAs();rAs();">✕</button></td></tr>`;
@@ -1326,7 +1335,7 @@ function rAs(){
 }
 window.aCash=()=>{
   let defType = gAsD().typeCats.length > 0 ? gAsD().typeCats[0].name : "";
-  gAsD().cashDetails.push({type:defType,bc:"",sc:"",tk:"",amt:""});sAs();rAs();
+  gAsD().cashDetails.push({type:defType,mc:"",bc:"",tk:"",amt:""});sAs();rAs();
 };
 window.aAD=()=>{
   let defType = gAsD().typeCats.length > 0 ? gAsD().typeCats[gAsD().typeCats.length-1].name : "";
