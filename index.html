@@ -951,7 +951,8 @@ function drawDonut(cid,items,vid,lid){
 
 function buildYM(yid,mid,cy,cm){
   const ys=document.getElementById(yid),ms=document.getElementById(mid); if(!ys||!ms)return; ys.innerHTML="";ms.innerHTML="";
-  for(let y=CUR_Y-2;y<=CUR_Y+2;y++){const o=document.createElement("option");o.value=y;o.textContent=y+"년";if(y===cy)o.selected=true;ys.appendChild(o);}
+  // ✨ 여기서 2026년부터 시작하도록 수정했습니다. 2026년 ~ 2030년 표시
+  for(let y=CUR_Y;y<=CUR_Y+4;y++){const o=document.createElement("option");o.value=y;o.textContent=y+"년";if(y===cy)o.selected=true;ys.appendChild(o);}
   if(ms) { for(let m=1;m<=12;m++){const o=document.createElement("option");o.value=m;o.textContent=m+"월";if(m===cm)o.selected=true;ms.appendChild(o);} }
 }
 
@@ -1442,7 +1443,8 @@ window.dSC = function(){
 (function init(){
   buildYM("lgy","lgm",lgY,lgM); buildYM("iy","im",iY,iM); buildYM("ey","em",eY,eM); buildYM("nvy","nvm",nvY,nvM); buildYM("scy","scm",scY,scM); buildYM("jp_y","jp_m",jpY,jpM);
   const rys = document.getElementById("ry");
-  if(rys){ for(let y=CUR_Y-2;y<=CUR_Y+2;y++){ const o=document.createElement("option"); o.value=y; o.textContent=y+"년"; if(y===rY)o.selected=true; rys.appendChild(o); } }
+  // ✨ 리포트 연도 선택도 2026년부터 시작하도록 수정
+  if(rys){ for(let y=CUR_Y;y<=CUR_Y+4;y++){ const o=document.createElement("option"); o.value=y; o.textContent=y+"년"; if(y===rY)o.selected=true; rys.appendChild(o); } }
 })();
 </script>
 </body>
