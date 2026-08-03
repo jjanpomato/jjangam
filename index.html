@@ -304,7 +304,7 @@ input.ti:focus{border-color:var(--main-color);}
         <div class="ll2" id="il"></div>
       </div>
     </div>
-    <div class="cm"><h3>🏷 분류 관리 <span style="font-size:11px;color:var(--text-muted);">(최대 15개)</span></h3>
+    <div class="cm"><h3>🏷 분류 관리 <span style="font-size:11px;color:var(--text-muted);">(최대 20개)</span></h3>
       <div class="cw" id="ichips"></div>
       <div class="car">
         <div><div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">색상</div><div class="pr" id="ipal"></div></div>
@@ -352,7 +352,7 @@ input.ti:focus{border-color:var(--main-color);}
         <div class="ll2" id="el"></div>
       </div>
     </div>
-    <div class="cm"><h3>🏷 분류 관리 <span style="font-size:11px;color:var(--text-muted);">(최대 15개)</span></h3>
+    <div class="cm"><h3>🏷 분류 관리 <span style="font-size:11px;color:var(--text-muted);">(최대 20개)</span></h3>
       <div class="cw" id="echips"></div>
       <div class="car">
         <div><div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">색상</div><div class="pr" id="epal"></div></div>
@@ -417,7 +417,7 @@ input.ti:focus{border-color:var(--main-color);}
     </div>
     
     <div class="cm" style="margin-bottom:4px;">
-      <h3>🏷 대분류 관리 <span style="font-size:11px;color:var(--text-muted);">(최대 10개)</span></h3>
+      <h3>🏷 대분류 관리 <span style="font-size:11px;color:var(--text-muted);">(최대 20개)</span></h3>
       <div class="cw" id="nvchips"></div>
       <div class="car">
         <div><div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">색상</div><div class="pr" id="nvpal"></div></div>
@@ -471,29 +471,25 @@ input.ti:focus{border-color:var(--main-color);}
     </div>
 
     <div class="cm">
-      <h3>분류 관리 (자산 탭 전용)</h3>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;">
-        <button class="bsm" onclick="document.getElementById('cat_mgmt').style.display='block'">⚙️ 자산 분류 설정 열기</button>
-        <button class="bsm" onclick="document.getElementById('cat_mgmt').style.display='none'">닫기</button>
-      </div>
-      <div id="cat_mgmt" style="display:none; margin-top:10px; padding-top:10px; border-top:1px dashed var(--sub-color);">
-        <div class="stit">대분류 (최대 10개)</div>
+      <h3>🏷 분류 관리 (자산 탭 전용)</h3>
+      <div id="cat_mgmt" style="display:block; margin-top:10px; padding-top:10px; border-top:1px dashed var(--sub-color);">
+        <div class="stit">대분류 관리</div>
         <div class="cw" id="nsachips"></div>
         <div class="car">
           <div class="pr" id="nsapal"></div>
-          <input class="cni" id="nsacni" placeholder="분류명"><button class="cac" onclick="addNsaCatUI()">＋</button>
+          <input class="cni" id="nsacni" placeholder="분류명 입력"><button class="cac" onclick="addNsaCatUI()">＋ 대분류 추가</button>
         </div>
-        <div class="stit" style="margin-top:10px;">중분류 (최대 30개)</div>
+        <div class="stit" style="margin-top:16px;">중분류 관리</div>
         <div class="cw" id="midchips"></div>
         <div class="car">
           <div class="pr" id="midpal"></div>
-          <input class="cni" id="midcni" placeholder="분류명"><button class="cac" onclick="addMidCatUI()">＋</button>
+          <input class="cni" id="midcni" placeholder="분류명 입력"><button class="cac" onclick="addMidCatUI()">＋ 중분류 추가</button>
         </div>
-        <div class="stit" style="margin-top:10px;">소분류 (최대 10개)</div>
+        <div class="stit" style="margin-top:16px;">소분류 관리</div>
         <div class="cw" id="subchips"></div>
         <div class="car">
           <div class="pr" id="subpal"></div>
-          <input class="cni" id="subcni" placeholder="분류명"><button class="cac" onclick="addSubCatUI()">＋</button>
+          <input class="cni" id="subcni" placeholder="분류명 입력"><button class="cac" onclick="addSubCatUI()">＋ 소분류 추가</button>
         </div>
       </div>
     </div>
@@ -511,7 +507,7 @@ input.ti:focus{border-color:var(--main-color);}
           </tr></thead>
           <tbody id="cashtb"></tbody>
         </table>
-        <button class="arb" onclick="aCash()">＋ 현금/저축 자산 추가</button>
+        <button class="arb" onclick="aCash()">＋ 현금/저축 자산 항목 추가</button>
       </div>
     </div>
 
@@ -541,7 +537,7 @@ input.ti:focus{border-color:var(--main-color);}
           <thead><tr style="background:#fff0f0;"><th style="color:#e8453c;">대출/부채 내용</th><th style="width:150px; color:#e8453c;">금액 (원)</th><th style="width:44px">삭제</th></tr></thead>
           <tbody id="liabtb"></tbody>
         </table>
-        <button class="arb" onclick="aLiab()" style="background:#fff9f9; color:#e8453c; border-top-color:#ffb3ba;">＋ 부채 추가</button>
+        <button class="arb" onclick="aLiab()" style="background:#fff9f9; color:#e8453c; border-top-color:#ffb3ba;">＋ 부채 항목 추가</button>
       </div>
     </div>
   </div>
@@ -889,11 +885,20 @@ function gLgData(y,m){ if(!lgD[y])lgD[y]={}; if(!lgD[y][m])lgD[y][m]={salary:"",
 function gID(y,m){ if(!iD[y])iD[y]={}; if(!iD[y][m]){iD[y][m]={fixed:[],dated:[]}; sI();} iD[y][m].fixed=ensureArr(iD[y][m].fixed); iD[y][m].dated=ensureArr(iD[y][m].dated); return iD[y][m]; }
 function gED(y,m){ if(!eD[y])eD[y]={}; if(!eD[y][m]){eD[y][m]={fixed:[],dated:[]}; sE();} eD[y][m].fixed=ensureArr(eD[y][m].fixed); eD[y][m].dated=ensureArr(eD[y][m].dated); return eD[y][m]; }
 function gNvD(y,m){ if(!nvD[y])nvD[y]={}; if(!nvD[y][m]){nvD[y][m]={total:"",rows:[],manualTotal:""}; sNv();} nvD[y][m].rows=ensureArr(nvD[y][m].rows); return nvD[y][m]; }
-function gAsD(){ checkDefaults(); return asD.main; }
+function gAsD(){ 
+  checkDefaults(); 
+  let d = asD.main;
+  // 에러 방지: 데이터가 깨져있어도 기본 배열을 강제로 넣음
+  if(!d.nsaCats || !Array.isArray(d.nsaCats)) d.nsaCats = [{name:"자산",color:"#ffb3ba"}];
+  if(!d.midCats || !Array.isArray(d.midCats)) d.midCats = [];
+  if(!d.subs || !Array.isArray(d.subs)) d.subs = [];
+  return d; 
+}
 
 function bPal(tp){
   const row=document.getElementById(tp+"pal");if(!row)return;row.innerHTML="";
-  PAL.slice(0,10).forEach(c=>{
+  // 색상 20개 전체 렌더링
+  PAL.forEach(c=>{
     const d=document.createElement("div");d.className="pd";d.style.background=c;if(c===selP[tp])d.classList.add("sel");
     d.onclick=()=>{selP[tp]=c;row.querySelectorAll(".pd").forEach(x=>x.classList.remove("sel"));d.classList.add("sel");};
     row.appendChild(d);
@@ -906,13 +911,13 @@ function bChips(tp){
     const ch=document.createElement("div");ch.className="chip";ch.style.background=c.color;
     ch.innerHTML=c.name+`<span class="xd" onclick="remCat('${tp}',${i})">✕</span>`;w.appendChild(ch);
   });
-  document.getElementById(tp+"cnt").textContent=cats.length+" / 15";
+  document.getElementById(tp+"cnt").textContent=cats.length+" / 20";
 }
 function addCat(tp){
   const cats = tp==="i"?iCats:tp==="e"?eCats:nvCats;
-  if(cats.length>=15){alert(`최대 15개!`);return;}
+  if(cats.length>=20){alert(`최대 20개!`);return;}
   const name=document.getElementById(tp+"cni").value.trim();
-  if(!name){alert("입력!");return;}
+  if(!name){alert("이름을 입력해주세요!");return;}
   cats.push({name:name,color:selP[tp]}); 
   saveToFB(tp+"Cats", cats);
   document.getElementById(tp+"cni").value="";
@@ -920,9 +925,9 @@ function addCat(tp){
 }
 function remCat(tp,i){
   const cats=tp==="i"?iCats:tp==="e"?eCats:nvCats;
-  if(confirm("삭제?")){ cats.splice(i,1); saveToFB(tp+"Cats", cats); if(tp==="i")rInc(); else if(tp==="e")rExp(); else rNVTotal(); }
+  if(confirm("삭제할까요?")){ cats.splice(i,1); saveToFB(tp+"Cats", cats); if(tp==="i")rInc(); else if(tp==="e")rExp(); else rNVTotal(); }
 }
-const cc=(cats,n)=>{const c=cats.find(x=>x.name===n);return c?c.color:"#fff";};
+const cc=(cats,n)=>{if(!cats)return "#fff";const c=cats.find(x=>x.name===n);return c?c.color:"#fff";};
 const getCatOptionsHtml=(cats, s)=>{ let h=""; let f=false; (cats||[]).forEach(c=>{ h+=`<option value="${c.name}" ${c.name===s?"selected":""}>${c.name}</option>`; if(c.name===s)f=true;}); if(s&&!f)h+=`<option value="${s}" selected>${s}</option>`; else if(!s) h=`<option value="" selected>선택</option>`+h; return h; };
 
 function drawDonut(cid,items,vid,lid){
@@ -947,7 +952,6 @@ function drawDonut(cid,items,vid,lid){
 
 function buildYM(yid,mid,cy,cm){
   const ys=document.getElementById(yid),ms=document.getElementById(mid); if(!ys||!ms)return; ys.innerHTML="";ms.innerHTML="";
-  // ✨ 여기서 2026년부터 시작하도록 수정했습니다. 2026년 ~ 2030년 표시
   for(let y=CUR_Y;y<=CUR_Y+4;y++){const o=document.createElement("option");o.value=y;o.textContent=y+"년";if(y===cy)o.selected=true;ys.appendChild(o);}
   if(ms) { for(let m=1;m<=12;m++){const o=document.createElement("option");o.value=m;o.textContent=m+"월";if(m===cm)o.selected=true;ms.appendChild(o);} }
 }
@@ -1246,8 +1250,8 @@ function rAs(){
   const cT=document.getElementById("cashtb");cT.innerHTML="";
   d.cashDetails.forEach((r,i)=>{
     cT.innerHTML+=`<tr>
-    <td><select onchange="gAsD().cashDetails[${i}].mc=this.value;sAs();rAs();">${getCatOptionsHtml(d.nsaCats,r.mc)}</select></td>
-    <td><select onchange="gAsD().cashDetails[${i}].bc=this.value;sAs();rAs();">${getCatOptionsHtml(d.midCats,r.bc)}</select></td>
+    <td><select style="background:${cc(d.nsaCats,r.mc)};border-radius:6px;border:none;outline:none;padding:3px;width:100%;font-weight:700;" onchange="gAsD().cashDetails[${i}].mc=this.value;sAs();rAs();">${getCatOptionsHtml(d.nsaCats,r.mc)}</select></td>
+    <td><select style="background:${cc(d.midCats,r.bc)};border-radius:6px;border:none;outline:none;padding:3px;width:100%;font-weight:700;" onchange="gAsD().cashDetails[${i}].bc=this.value;sAs();rAs();">${getCatOptionsHtml(d.midCats,r.bc)}</select></td>
     <td><input value="${r.tk||""}" oninput="gAsD().cashDetails[${i}].tk=this.value;sAs();"></td>
     <td><input value="${fmtStr(r.amt)}" style="text-align:right;" oninput="gAsD().cashDetails[${i}].amt=fmtInp(this);sAs();updateAsTotals();"></td>
     <td style="text-align:center;"><button class="bsm" onclick="gAsD().cashDetails.splice(${i},1);sAs();rAs();">✕</button></td></tr>`;
@@ -1256,9 +1260,9 @@ function rAs(){
   const aT=document.getElementById("asdtb");aT.innerHTML="";
   d.details.forEach((r,i)=>{
     aT.innerHTML+=`<tr>
-    <td><select onchange="gAsD().details[${i}].mc=this.value;sAs();rAs();">${getCatOptionsHtml(d.nsaCats,r.mc)}</select></td>
-    <td><select onchange="gAsD().details[${i}].bc=this.value;sAs();rAs();">${getCatOptionsHtml(d.midCats,r.bc)}</select></td>
-    <td><select onchange="gAsD().details[${i}].sc=this.value;sAs();rAs();">${getCatOptionsHtml(d.subs,r.sc)}</select></td>
+    <td><select style="background:${cc(d.nsaCats,r.mc)};border-radius:6px;border:none;outline:none;padding:3px;width:100%;font-weight:700;" onchange="gAsD().details[${i}].mc=this.value;sAs();rAs();">${getCatOptionsHtml(d.nsaCats,r.mc)}</select></td>
+    <td><select style="background:${cc(d.midCats,r.bc)};border-radius:6px;border:none;outline:none;padding:3px;width:100%;font-weight:700;" onchange="gAsD().details[${i}].bc=this.value;sAs();rAs();">${getCatOptionsHtml(d.midCats,r.bc)}</select></td>
+    <td><select style="background:${cc(d.subs,r.sc)};border-radius:6px;border:none;outline:none;padding:3px;width:100%;font-weight:700;" onchange="gAsD().details[${i}].sc=this.value;sAs();rAs();">${getCatOptionsHtml(d.subs,r.sc)}</select></td>
     <td><input value="${r.tk||""}" oninput="gAsD().details[${i}].tk=this.value;sAs();"></td>
     <td><input value="${r.qty||""}" style="text-align:center;" oninput="gAsD().details[${i}].qty=this.value;sAs();"></td>
     <td><input value="${fmtStr(r.amt)}" style="text-align:right;" oninput="gAsD().details[${i}].amt=fmtInp(this);sAs();updateAsTotals();"></td>
@@ -1277,9 +1281,9 @@ window.aCash=()=>{gAsD().cashDetails.push({mc:"",bc:"",tk:"",amt:""});sAs();rAs(
 window.aAD=()=>{gAsD().details.push({mc:"",bc:"",sc:"",tk:"",qty:"",amt:""});sAs();rAs();};
 window.aLiab=()=>{gAsD().liabilities.push({tk:"",amt:""});sAs();rAs();};
 
-window.addNsaCatUI=()=>{const name=document.getElementById("nsacni").value; if(name){gAsD().nsaCats.push({name,color:selP.nsa}); sAs(); rAs();}};
-window.addMidCatUI=()=>{const name=document.getElementById("midcni").value; if(name){gAsD().midCats.push({name,color:selP.mid}); sAs(); rAs();}};
-window.addSubCatUI=()=>{const name=document.getElementById("subcni").value; if(name){gAsD().subs.push({name,color:selP.sub}); sAs(); rAs();}};
+window.addNsaCatUI=()=>{const name=document.getElementById("nsacni").value.trim(); if(name){gAsD().nsaCats.push({name,color:selP.nsa}); document.getElementById("nsacni").value=""; sAs(); rAs();}};
+window.addMidCatUI=()=>{const name=document.getElementById("midcni").value.trim(); if(name){gAsD().midCats.push({name,color:selP.mid}); document.getElementById("midcni").value=""; sAs(); rAs();}};
+window.addSubCatUI=()=>{const name=document.getElementById("subcni").value.trim(); if(name){gAsD().subs.push({name,color:selP.sub}); document.getElementById("subcni").value=""; sAs(); rAs();}};
 
 
 /* ================= 🍅🥔 짠포마토(통합) 대시보드 로직 ================= */
@@ -1439,7 +1443,6 @@ window.dSC = function(){
 (function init(){
   buildYM("lgy","lgm",lgY,lgM); buildYM("iy","im",iY,iM); buildYM("ey","em",eY,eM); buildYM("nvy","nvm",nvY,nvM); buildYM("scy","scm",scY,scM); buildYM("jp_y","jp_m",jpY,jpM);
   const rys = document.getElementById("ry");
-  // ✨ 리포트 연도 선택도 2026년부터 시작하도록 수정
   if(rys){ for(let y=CUR_Y;y<=CUR_Y+4;y++){ const o=document.createElement("option"); o.value=y; o.textContent=y+"년"; if(y===rY)o.selected=true; rys.appendChild(o); } }
 })();
 </script>
