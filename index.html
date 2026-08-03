@@ -286,7 +286,7 @@ input.ti:focus{border-color:var(--main-color);}
       </div>
       <div class="ws">
         <div class="wt">💡 다음 달 꼭 지킬 소비 약속</div>
-        <textarea id="lgpromise" style="width:100%;border:2px solid var(--sub-color);border-radius:10px;font-family:'Poor Story',cursive;font-size:13px;padding:8px;resize:vertical;outline:none;min-height:80px;background:var(--input-bg);" placeholder="자유롭게 적어보세요..."></textarea>
+        <textarea id="lgpromise" style="width:100%;border:2px solid var(--sub-color);border-radius:10px;font-family:'Poor Story',cursive;font-size:13px;padding:8px;resize:vertical;outline:none;min-height:80px;background:var(--input-bg);" placeholder="자유롭게 적어보세요..." oninput="gLgData(lgY,lgM).promise=this.value; sLg();"></textarea>
       </div>
     </div>
   </div>
@@ -995,6 +995,11 @@ function rLedger(){
       document.getElementById("lggoal").value = fmtStr(goalVal);
   }
   const goal = +String(goalVal).replace(/[^0-9]/g,'')||0;
+  
+  // 소비 약속 세팅
+  if (document.activeElement !== document.getElementById("lgpromise")) {
+      document.getElementById("lgpromise").value = ld.promise || "";
+  }
   
   drawDonut("lgdc1", [{name:"월급/수당",amount:sal,color:"#f4a7b9"},{name:"부수입",amount:iT,color:"#baffc9"}], "lgdv1", "lgl1");
   drawDonut("lgdc2", [{name:"지출",amount:eT,color:"#bae1ff"},{name:"저축/투자",amount:nT,color:"#ffffba"}], "lgdv2", "lgl2");
