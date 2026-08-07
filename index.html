@@ -219,7 +219,7 @@ input.ti:focus{border-color:var(--main-color);}
   </div>
   <div class="header-title-row">
     <span style="font-size:28px;">🍅🥔</span>
-    <h1>짠포마토의 기록 <span class="ver">v1.2</span></h1>
+    <h1>짠포마토의 기록 <span class="ver">v1.3</span></h1>
   </div>
   <div class="profile-switcher">
     <button id="prof_zzanto" class="prof-btn active" onclick="switchProfile('zzanto')">🍅 짠토</button>
@@ -243,50 +243,56 @@ input.ti:focus{border-color:var(--main-color);}
 
   <!-- 0: 가계부 탭 -->
   <div class="tab-page active" id="tp0">
-  <div class="ft" id="capture_t0">
-    <div class="mb">
-      <h2 id="tab0_title">🏠 가계부 요약</h2>
-      <select class="sc" id="lgy" onchange="rLedger()"></select>
-      <select class="sc" id="lgm" onchange="rLedger()"></select>
-      <button class="sav" onclick="saveForSNS('capture_t0', '가계부요약')">📸 SNS 저장</button>
-    </div>
-    <div class="ledger-wrap">
-      <div class="ledger-chart-box">
-        <div class="ledger-chart-title">총 수입</div>
-        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
-          <div class="dw"><canvas id="lgdc1" width="140" height="140"></canvas>
-            <div class="dc"><div class="dl2">총수입</div><div class="dv" id="lgdv1">₩0</div></div></div>
-          <div class="ll2" id="lgl1"></div>
+  <div class="ft">
+    
+    <!-- 캡처 영역 시작 (딱 요약본만!) -->
+    <div id="capture_t0" style="display:flex; flex-direction:column; gap:16px; width:100%;">
+      <div class="mb">
+        <h2 id="tab0_title">🏠 가계부 요약</h2>
+        <select class="sc" id="lgy" onchange="rLedger()"></select>
+        <select class="sc" id="lgm" onchange="rLedger()"></select>
+        <button class="sav" onclick="saveForSNS('capture_t0', '가계부요약')">📸 SNS 저장</button>
+      </div>
+      <div class="ledger-wrap">
+        <div class="ledger-chart-box">
+          <div class="ledger-chart-title">총 수입</div>
+          <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+            <div class="dw"><canvas id="lgdc1" width="140" height="140"></canvas>
+              <div class="dc"><div class="dl2">총수입</div><div class="dv" id="lgdv1">₩0</div></div></div>
+            <div class="ll2" id="lgl1"></div>
+          </div>
+        </div>
+        <div class="ledger-chart-box">
+          <div class="ledger-chart-title">총 지출/저축/투자</div>
+          <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+            <div class="dw"><canvas id="lgdc2" width="140" height="140"></canvas>
+              <div class="dc"><div class="dl2">지출/저축</div><div class="dv" id="lgdv2">₩0</div></div></div>
+            <div class="ll2" id="lgl2"></div>
+          </div>
         </div>
       </div>
-      <div class="ledger-chart-box">
-        <div class="ledger-chart-title">총 지출/저축/투자</div>
-        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
-          <div class="dw"><canvas id="lgdc2" width="140" height="140"></canvas>
-            <div class="dc"><div class="dl2">지출/저축</div><div class="dv" id="lgdv2">₩0</div></div></div>
-          <div class="ll2" id="lgl2"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;" id="lggoalrow">
+        <div class="as-goal-box">
+          <div class="as-goal-label">목표 예산 (지출 기준)</div>
+          <input class="as-goal-input" id="lggoal" placeholder="예: 500,000" oninput="fmtInp(this); updateLgGoal(this);">
+        </div>
+        <div class="as-goal-box">
+          <div class="as-goal-label">이번달 잔액</div>
+          <div class="as-goal-value" id="lgbal">₩0</div>
+        </div>
+        <div class="as-goal-box">
+          <div class="as-goal-label">경고</div>
+          <div id="lgwarn" style="font-size:13px;font-weight:700;color:#2e7d32;">✅ 안전지대</div>
         </div>
       </div>
     </div>
+    <!-- 캡처 영역 끝 -->
+
     <div class="ledger-table-wrap">
       <table class="lt" id="lgtbl">
         <thead><tr><th style="width:180px">항목</th><th>금액</th><th style="width:140px">메모/상태</th></tr></thead>
         <tbody id="lgtbody"></tbody>
       </table>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;" id="lggoalrow">
-      <div class="as-goal-box">
-        <div class="as-goal-label">목표 예산 (지출 기준)</div>
-        <input class="as-goal-input" id="lggoal" placeholder="예: 500,000" oninput="fmtInp(this); updateLgGoal(this);">
-      </div>
-      <div class="as-goal-box">
-        <div class="as-goal-label">이번달 잔액</div>
-        <div class="as-goal-value" id="lgbal">₩0</div>
-      </div>
-      <div class="as-goal-box">
-        <div class="as-goal-label">경고</div>
-        <div id="lgwarn" style="font-size:13px;font-weight:700;color:#2e7d32;">✅ 안전지대</div>
-      </div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
       <div class="ws">
@@ -303,21 +309,26 @@ input.ti:focus{border-color:var(--main-color);}
 
   <!-- 1: 부수입 탭 -->
   <div class="tab-page" id="tp1">
-  <div class="ft" id="capture_t1">
-    <div class="mb">
-      <h2>💚 부수입 기록</h2>
-      <select class="sc" id="iy" onchange="imc()"></select>
-      <select class="sc" id="im" onchange="imc()"></select>
-      <span class="pill" id="ipill">₩0</span>
-      <button class="sav" onclick="saveForSNS('capture_t1', '부수입기록')">📸 SNS 저장</button>
-    </div>
-    <div class="cs"><h3>📊 분류별 수입 현황</h3>
-      <div class="crow">
-        <div class="dw"><canvas id="idc" width="160" height="160"></canvas>
-          <div class="dc"><div class="dl2">총 수입</div><div class="dv" id="idv">₩0</div></div></div>
-        <div class="ll2" id="il"></div>
+  <div class="ft">
+    <!-- 캡처 영역 시작 -->
+    <div id="capture_t1" style="display:flex; flex-direction:column; gap:16px; width:100%;">
+      <div class="mb">
+        <h2>💚 부수입 기록</h2>
+        <select class="sc" id="iy" onchange="imc()"></select>
+        <select class="sc" id="im" onchange="imc()"></select>
+        <span class="pill" id="ipill">₩0</span>
+        <button class="sav" onclick="saveForSNS('capture_t1', '부수입기록')">📸 SNS 저장</button>
+      </div>
+      <div class="cs"><h3>📊 분류별 수입 현황</h3>
+        <div class="crow">
+          <div class="dw"><canvas id="idc" width="160" height="160"></canvas>
+            <div class="dc"><div class="dl2">총 수입</div><div class="dv" id="idv">₩0</div></div></div>
+          <div class="ll2" id="il"></div>
+        </div>
       </div>
     </div>
+    <!-- 캡처 영역 끝 -->
+
     <div class="cm" id="cat_mgmt"><h3>🏷 분류 관리 <span style="font-size:11px;color:var(--text-muted);">(최대 20개)</span></h3>
       <div class="cw" id="ichips"></div>
       <div class="car">
@@ -358,21 +369,26 @@ input.ti:focus{border-color:var(--main-color);}
 
   <!-- 2: 지출 탭 -->
   <div class="tab-page" id="tp2">
-  <div class="ft" id="capture_t2">
-    <div class="mb">
-      <h2>💸 지출 기록</h2>
-      <select class="sc" id="ey" onchange="emc()"></select>
-      <select class="sc" id="em" onchange="emc()"></select>
-      <span class="pill" id="epill">₩0</span>
-      <button class="sav" onclick="saveForSNS('capture_t2', '지출기록')">📸 SNS 저장</button>
-    </div>
-    <div class="cs"><h3>📊 분류별 지출 현황</h3>
-      <div class="crow">
-        <div class="dw"><canvas id="edc" width="160" height="160"></canvas>
-          <div class="dc"><div class="dl2">총 지출</div><div class="dv" id="edv">₩0</div></div></div>
-        <div class="ll2" id="el"></div>
+  <div class="ft">
+    <!-- 캡처 영역 시작 -->
+    <div id="capture_t2" style="display:flex; flex-direction:column; gap:16px; width:100%;">
+      <div class="mb">
+        <h2>💸 지출 기록</h2>
+        <select class="sc" id="ey" onchange="emc()"></select>
+        <select class="sc" id="em" onchange="emc()"></select>
+        <span class="pill" id="epill">₩0</span>
+        <button class="sav" onclick="saveForSNS('capture_t2', '지출기록')">📸 SNS 저장</button>
+      </div>
+      <div class="cs"><h3>📊 분류별 지출 현황</h3>
+        <div class="crow">
+          <div class="dw"><canvas id="edc" width="160" height="160"></canvas>
+            <div class="dc"><div class="dl2">총 지출</div><div class="dv" id="edv">₩0</div></div></div>
+          <div class="ll2" id="el"></div>
+        </div>
       </div>
     </div>
+    <!-- 캡처 영역 끝 -->
+
     <div class="cm" id="cat_mgmt"><h3>🏷 분류 관리 <span style="font-size:11px;color:var(--text-muted);">(최대 20개)</span></h3>
       <div class="cw" id="echips"></div>
       <div class="car">
@@ -435,15 +451,19 @@ input.ti:focus{border-color:var(--main-color);}
 
   <!-- 4: 저축/투자 탭 -->
   <div class="tab-page" id="tp4">
-  <div class="ft" id="capture_t4">
-    <div class="mb">
-      <h2>📈 저축/투자 내역</h2>
-      <select class="sc" id="nvy" onchange="onNP()"></select>
-      <select class="sc" id="nvm" onchange="onNP()"></select>
-      <span class="pill nv-auto-sum-disp" id="nvpill">총 저축/투자 ₩0</span>
-      <button class="sav" onclick="saveForSNS('capture_t4', '저축투자')">📸 SNS 저장</button>
+  <div class="ft">
+    <!-- 캡처 영역 시작 -->
+    <div id="capture_t4" style="display:flex; flex-direction:column; gap:16px; width:100%;">
+      <div class="mb">
+        <h2>📈 저축/투자 내역</h2>
+        <select class="sc" id="nvy" onchange="onNP()"></select>
+        <select class="sc" id="nvm" onchange="onNP()"></select>
+        <span class="pill nv-auto-sum-disp" id="nvpill">총 저축/투자 ₩0</span>
+        <button class="sav" onclick="saveForSNS('capture_t4', '저축투자')">📸 SNS 저장</button>
+      </div>
     </div>
-    
+    <!-- 캡처 영역 끝 -->
+
     <div class="cm" style="margin-bottom:4px;" id="cat_mgmt">
       <h3>🏷 대분류 관리 <span style="font-size:11px;color:var(--text-muted);">(최대 20개)</span></h3>
       <div class="cw" id="nvchips"></div>
@@ -460,44 +480,48 @@ input.ti:focus{border-color:var(--main-color);}
 
   <!-- 5: 자산/부채 현황 탭 -->
   <div class="tab-page" id="tp5">
-  <div class="ft" id="capture_t5">
-    <div class="mb">
-      <h2 id="tab4_title">💼 자산 및 부채 현황</h2>
-      <button class="sav" onclick="saveForSNS('capture_t5', '자산현황')">📸 SNS 저장</button>
-    </div>
-    <div class="as-goal-row" style="grid-template-columns: 1fr 1fr 1fr;">
-      <div class="as-goal-box">
-        <div class="as-goal-label">💰 총 자산 (내돈+은행돈)</div>
-        <div class="as-goal-value" id="as_tot_assets">₩0</div>
+  <div class="ft">
+    <!-- 캡처 영역 시작 -->
+    <div id="capture_t5" style="display:flex; flex-direction:column; gap:16px; width:100%;">
+      <div class="mb">
+        <h2 id="tab4_title">💼 자산 및 부채 현황</h2>
+        <button class="sav" onclick="saveForSNS('capture_t5', '자산현황')">📸 SNS 저장</button>
       </div>
-      <div class="as-goal-box" style="background:#fff0f0; border-color:#ffb3ba;">
-        <div class="as-goal-label" style="color:#e8453c;">⚠️ 총 부채 (빌린돈)</div>
-        <div class="as-goal-value" id="as_tot_liabs" style="color:#e8453c;">₩0</div>
+      <div class="as-goal-row" style="grid-template-columns: 1fr 1fr 1fr;">
+        <div class="as-goal-box">
+          <div class="as-goal-label">💰 총 자산 (내돈+은행돈)</div>
+          <div class="as-goal-value" id="as_tot_assets">₩0</div>
+        </div>
+        <div class="as-goal-box" style="background:#fff0f0; border-color:#ffb3ba;">
+          <div class="as-goal-label" style="color:#e8453c;">⚠️ 총 부채 (빌린돈)</div>
+          <div class="as-goal-value" id="as_tot_liabs" style="color:#e8453c;">₩0</div>
+        </div>
+        <div class="as-goal-box" style="background:#e8f5e9; border-color:#baffc9;">
+          <div class="as-goal-label" style="color:#2e7d32;">✨ 진짜 내 돈 (순자산)</div>
+          <div class="as-goal-value" id="as_net_worth" style="color:#2e7d32; font-size:22px;">₩0</div>
+        </div>
       </div>
-      <div class="as-goal-box" style="background:#e8f5e9; border-color:#baffc9;">
-        <div class="as-goal-label" style="color:#2e7d32;">✨ 진짜 내 돈 (순자산)</div>
-        <div class="as-goal-value" id="as_net_worth" style="color:#2e7d32; font-size:22px;">₩0</div>
-      </div>
-    </div>
 
-    <div class="asset-chart-grid">
-      <div class="ws" style="margin-bottom:0;">
-        <div class="wt">📊 총 자산 비율 (자산구분 기준)</div>
-        <div class="crow">
-          <div class="dw"><canvas id="asdc1" width="140" height="140"></canvas>
-            <div class="dc"><div class="dl2">총 자산</div><div class="dv" id="asdv1">₩0</div></div></div>
-          <div class="ll2" id="asl1"></div>
+      <div class="asset-chart-grid">
+        <div class="ws" style="margin-bottom:0;">
+          <div class="wt">📊 총 자산 비율 (자산구분 기준)</div>
+          <div class="crow">
+            <div class="dw"><canvas id="asdc1" width="140" height="140"></canvas>
+              <div class="dc"><div class="dl2">총 자산</div><div class="dv" id="asdv1">₩0</div></div></div>
+            <div class="ll2" id="asl1"></div>
+          </div>
         </div>
-      </div>
-      <div class="ws" style="margin-bottom:0;">
-        <div class="wt">📊 주식/투자 비율 (대분류 기준)</div>
-        <div class="crow">
-          <div class="dw"><canvas id="asdc2" width="140" height="140"></canvas>
-            <div class="dc"><div class="dl2">주식/투자</div><div class="dv" id="asdv2">₩0</div></div></div>
-          <div class="ll2" id="asl2"></div>
+        <div class="ws" style="margin-bottom:0;">
+          <div class="wt">📊 주식/투자 비율 (대분류 기준)</div>
+          <div class="crow">
+            <div class="dw"><canvas id="asdc2" width="140" height="140"></canvas>
+              <div class="dc"><div class="dl2">주식/투자</div><div class="dv" id="asdv2">₩0</div></div></div>
+            <div class="ll2" id="asl2"></div>
+          </div>
         </div>
       </div>
     </div>
+    <!-- 캡처 영역 끝 -->
 
     <div class="cm" id="cat_mgmt">
       <h3>🏷 분류 관리 (자산 탭 전용)</h3>
@@ -1534,7 +1558,7 @@ window.saveForSNS = function(targetId, fileName) {
   if(!target) return;
   
   // 임시로 숨길 UI 버튼들 (캡처화면에서 안 보이게)
-  const hideEls = target.querySelectorAll('.sav, .bsm, .arb, .cac, .xd, #cat_mgmt, .car');
+  const hideEls = target.querySelectorAll('.sav, .bsm, .arb, .cac, .xd, #cat_mgmt, .car, select.sc');
   const originalDisplays = [];
   hideEls.forEach(el => {
     originalDisplays.push(el.style.display);
