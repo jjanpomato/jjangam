@@ -219,7 +219,7 @@ input.ti:focus{border-color:var(--main-color);}
   </div>
   <div class="header-title-row">
     <span style="font-size:28px;">🍅🥔</span>
-    <h1>짠포마토의 기록 <span class="ver">v1.1</span></h1>
+    <h1>짠포마토의 기록 <span class="ver">v1.2</span></h1>
   </div>
   <div class="profile-switcher">
     <button id="prof_zzanto" class="prof-btn active" onclick="switchProfile('zzanto')">🍅 짠토</button>
@@ -235,7 +235,6 @@ input.ti:focus{border-color:var(--main-color);}
     <button class="tab-btn active" onclick="sw(0)">🏠 가계부</button>
     <button class="tab-btn" onclick="sw(1)">💚 부수입</button>
     <button class="tab-btn" onclick="sw(2)">💸 지출</button>
-    <!-- 짠감 모드에서는 JS를 통해 자동으로 가려집니다 -->
     <button class="tab-btn" id="tab_btn_scoop" onclick="sw(3)">🥄 랜덤스쿱</button>
     <button class="tab-btn" onclick="sw(4)">📈 저축/투자</button>
     <button class="tab-btn" onclick="sw(5)">💼 자산 및 부채</button>
@@ -338,15 +337,21 @@ input.ti:focus{border-color:var(--main-color);}
     </div>
     <div>
       <div class="stit"><h3>📌 상시 수입</h3><span class="stag">매달 있는 항목</span></div>
-      <div class="dtw"><table class="dt"><thead><tr><th style="width:120px">분류</th><th>내용</th><th style="width:130px">금액 (원)</th><th style="width:44px">삭제</th></tr></thead><tbody id="ifb2"></tbody></table>
-        <button class="arb" onclick="aFR()">＋ 상시 항목 추가</button></div>
+      <div class="dtw"><table class="dt">
+        <thead><tr><th style="width:120px">분류</th><th>내용</th><th style="width:130px">금액 (원)</th><th style="width:40px">제외</th><th style="width:44px">삭제</th></tr></thead>
+        <tbody id="ifb2"></tbody>
+      </table>
+      <button class="arb" onclick="aFR()">＋ 상시 항목 추가</button></div>
     </div>
     <div>
       <div class="stit"><h3>📅 날짜별 수입</h3><span class="stag" id="idtag">날짜별</span>
         <button class="bsm" style="margin-left:auto;" onclick="sortDated('i')">⬇️ 날짜순 정렬</button>
       </div>
-      <div class="dtw"><table class="dt"><thead><tr><th style="width:70px">날짜</th><th style="width:120px">분류</th><th>내용</th><th style="width:130px">금액 (원)</th><th style="width:44px">삭제</th></tr></thead><tbody id="idb"></tbody></table>
-        <button class="arb" onclick="aDR()">＋ 날짜별 항목 추가</button></div>
+      <div class="dtw"><table class="dt">
+        <thead><tr><th style="width:70px">날짜</th><th style="width:120px">분류</th><th>내용</th><th style="width:130px">금액 (원)</th><th style="width:40px">제외</th><th style="width:44px">삭제</th></tr></thead>
+        <tbody id="idb"></tbody>
+      </table>
+      <button class="arb" onclick="aDR()">＋ 날짜별 항목 추가</button></div>
     </div>
   </div>
   </div>
@@ -387,20 +392,26 @@ input.ti:focus{border-color:var(--main-color);}
     </div>
     <div>
       <div class="stit"><h3>📌 고정 지출</h3><span class="stag">매달 나가는 항목</span></div>
-      <div class="dtw"><table class="dt"><thead><tr><th style="width:120px">분류</th><th>내용</th><th style="width:130px">금액 (원)</th><th style="width:70px">과소비</th><th style="width:44px">삭제</th></tr></thead><tbody id="efb2"></tbody></table>
-        <button class="arb" onclick="aEF()">＋ 고정 지출 추가</button></div>
+      <div class="dtw"><table class="dt">
+        <thead><tr><th style="width:120px">분류</th><th>내용</th><th style="width:130px">금액 (원)</th><th style="width:70px">과소비</th><th style="width:40px">제외</th><th style="width:44px">삭제</th></tr></thead>
+        <tbody id="efb2"></tbody>
+      </table>
+      <button class="arb" onclick="aEF()">＋ 고정 지출 추가</button></div>
     </div>
     <div>
       <div class="stit"><h3>📅 날짜별 지출</h3><span class="stag" id="edtag">날짜별</span>
         <button class="bsm" style="margin-left:auto;" onclick="sortDated('e')">⬇️ 날짜순 정렬</button>
       </div>
-      <div class="dtw"><table class="dt"><thead><tr><th style="width:70px">날짜</th><th style="width:120px">분류</th><th>내용</th><th style="width:130px">금액 (원)</th><th style="width:70px">과소비</th><th style="width:44px">삭제</th></tr></thead><tbody id="edb"></tbody></table>
-        <button class="arb" onclick="aED()">＋ 날짜별 지출 추가</button></div>
+      <div class="dtw"><table class="dt">
+        <thead><tr><th style="width:70px">날짜</th><th style="width:120px">분류</th><th>내용</th><th style="width:130px">금액 (원)</th><th style="width:70px">과소비</th><th style="width:40px">제외</th><th style="width:44px">삭제</th></tr></thead>
+        <tbody id="edb"></tbody>
+      </table>
+      <button class="arb" onclick="aED()">＋ 날짜별 지출 추가</button></div>
     </div>
   </div>
   </div>
 
-  <!-- 3: 랜덤스쿱 저축 탭 (짠감 모드에서는 자동 숨김 처리됨) -->
+  <!-- 3: 랜덤스쿱 저축 탭 -->
   <div class="tab-page" id="tp3">
   <div class="ft">
     <div class="mb">
@@ -469,7 +480,6 @@ input.ti:focus{border-color:var(--main-color);}
       </div>
     </div>
 
-    <!-- 차트를 양옆으로 나란히 배치하는 그리드 -->
     <div class="asset-chart-grid">
       <div class="ws" style="margin-bottom:0;">
         <div class="wt">📊 총 자산 비율 (자산구분 기준)</div>
@@ -995,7 +1005,7 @@ function updateLgGoal(el){
   gLgData(lgY,lgM).goal = el.value.replace(/[^0-9]/g,'');
   sLg();
   const ed=gED(lgY,lgM);
-  const eT=ed.fixed.concat(ed.dated).reduce((s,r)=>s+(+r.amount||0),0);
+  const eT=ed.fixed.concat(ed.dated).filter(r=>!r.exclude).reduce((s,r)=>s+(+r.amount||0),0);
   const goal = +(gLgData(lgY,lgM).goal) || 0;
   const w=document.getElementById("lgwarn");
   if(eT>goal){w.innerHTML="🚨 목표 초과!";w.style.color="var(--main-color)";}else{w.innerHTML="✅ 안전지대";w.style.color="#2e7d32";}
@@ -1005,11 +1015,12 @@ function rLedger(){
   checkDefaults();
   lgY=parseInt(document.getElementById("lgy").value)||CUR_Y; lgM=parseInt(document.getElementById("lgm").value)||CUR_M;
   const id=gID(lgY,lgM), ed=gED(lgY,lgM), nd=gNvD(lgY,lgM), ld=gLgData(lgY,lgM);
-  const iT=id.fixed.concat(id.dated).reduce((s,r)=>s+(+r.amount||0),0);
-  const eT=ed.fixed.concat(ed.dated).reduce((s,r)=>s+(+r.amount||0),0);
+  
+  const iT=id.fixed.concat(id.dated).filter(r=>!r.exclude).reduce((s,r)=>s+(+r.amount||0),0);
+  const eT=ed.fixed.concat(ed.dated).filter(r=>!r.exclude).reduce((s,r)=>s+(+r.amount||0),0);
   const nT=+(nd.manualTotal)||0; const sal=+ld.salary||0;
 
-  // 목표 예산 세팅 (입력 중에 커서가 튀지 않도록 포커스가 없을 때만 값 채우기)
+  // 목표 예산 세팅
   const goalVal = ld.goal !== undefined ? ld.goal : 500000;
   if (document.activeElement !== document.getElementById("lggoal")) {
       document.getElementById("lggoal").value = fmtStr(goalVal);
@@ -1049,21 +1060,21 @@ function rLedger(){
   const w=document.getElementById("lgwarn");
   if(eT>goal){w.innerHTML="🚨 목표 초과!";w.style.color="var(--main-color)";}else{w.innerHTML="✅ 안전지대";w.style.color="#2e7d32";}
   
-  const ovs=ed.fixed.concat(ed.dated).filter(r=>r.over==="과소비").sort((a,b)=>b.amount-a.amount);
+  const ovs=ed.fixed.concat(ed.dated).filter(r=>r.over==="과소비" && !r.exclude).sort((a,b)=>b.amount-a.amount);
   const o3=document.getElementById("lgover3");o3.innerHTML="";
   ["🚨 1위","⚠️ 2위","💚 3위"].forEach((lbl,i)=>{
     const it=ovs[i]; o3.innerHTML+=`<div style="display:flex;gap:8px;font-size:12px;padding:4px 0;border-bottom:1px dashed var(--sub-color);"><span style="font-weight:700;">${lbl}</span><span>${it?it.desc:"—"}</span><span style="margin-left:auto;font-weight:700;color:var(--main-color);">${it?"₩"+fmt(it.amount):""}</span></div>`;
   });
 }
 
-/* ================= 1: 부수입 / 2: 지출 (키보드 포커스 유지) ================= */
+/* ================= 1: 부수입 / 2: 지출 ================= */
 function imc(){iY=parseInt(document.getElementById("iy").value)||CUR_Y;iM=parseInt(document.getElementById("im").value)||CUR_M;rInc();}
 function emc(){eY=parseInt(document.getElementById("ey").value)||CUR_Y;eM=parseInt(document.getElementById("em").value)||CUR_M;rExp();}
 function sortDated(tp){let d=tp==='i'?gID(iY,iM):gED(eY,eM); d.dated.sort((a,b)=>(parseInt(a.date.replace(/[^0-9]/g,''))||0)-(parseInt(b.date.replace(/[^0-9]/g,''))||0)); if(tp==='i'){sI();rInc();}else{sE();rExp();}}
 
 window.calcIncTotals = () => {
   const d = gID(iY, iM);
-  const allRows = d.fixed.concat(d.dated);
+  const allRows = d.fixed.concat(d.dated).filter(r => !r.exclude);
   const agg = {}; allRows.forEach(r => agg[r.cat||"기타"] = (agg[r.cat||"기타"]||0) + (+r.amount||0));
   drawDonut("idc", Object.keys(agg).map(k => ({name:k, amount:agg[k], color:cc(iCats,k)})), "idv", "il");
   document.getElementById("ipill").textContent = "₩" + fmt(allRows.reduce((s,r) => s + (+r.amount||0), 0));
@@ -1077,27 +1088,29 @@ function rInc(){
   const df=document.getElementById("iDateFil")?document.getElementById("iDateFil").value.trim():"";
   const fT=document.getElementById("ifb2");fT.innerHTML="";
   d.fixed.forEach((r,i)=>{
-    fT.innerHTML+=`<tr><td><select style="background:${cc(iCats,r.cat)};border-radius:6px;border:none;outline:none;padding:3px;width:100%;font-weight:700;" onchange="gID(${iY},${iM}).fixed[${i}].cat=this.value;sI();rInc();">${getCatOptionsHtml(iCats,r.cat)}</select></td>
+    fT.innerHTML+=`<tr style="opacity:${r.exclude?'0.4':'1'};"><td><select style="background:${cc(iCats,r.cat)};border-radius:6px;border:none;outline:none;padding:3px;width:100%;font-weight:700;" onchange="gID(${iY},${iM}).fixed[${i}].cat=this.value;sI();rInc();">${getCatOptionsHtml(iCats,r.cat)}</select></td>
     <td><input value="${r.desc||""}" oninput="gID(${iY},${iM}).fixed[${i}].desc=this.value;sI();"></td>
-    <td><input value="${fmtStr(r.amount)}" oninput="gID(${iY},${iM}).fixed[${i}].amount=fmtInp(this);sI();calcIncTotals();" onchange="rLedger();" style="text-align:right;"></td>
+    <td><input value="${fmtStr(r.amount)}" oninput="gID(${iY},${iM}).fixed[${i}].amount=fmtInp(this);sI();calcIncTotals();" style="text-align:right;"></td>
+    <td style="text-align:center;"><input type="checkbox" ${r.exclude?"checked":""} onchange="gID(${iY},${iM}).fixed[${i}].exclude=this.checked;sI();calcIncTotals();rInc();rLedger();"></td>
     <td style="text-align:center;"><button class="bsm" onclick="gID(${iY},${iM}).fixed.splice(${i},1);sI();rInc();rLedger();">✕</button></td></tr>`;
   });
   const dT=document.getElementById("idb");dT.innerHTML="";
   d.dated.forEach((r,i)=>{
     if(df && !String(r.date).includes(df)) return;
-    dT.innerHTML+=`<tr><td><input value="${r.date||""}" onchange="gID(${iY},${iM}).dated[${i}].date=this.value;sI();" style="width:60px;"></td>
+    dT.innerHTML+=`<tr style="opacity:${r.exclude?'0.4':'1'};"><td><input value="${r.date||""}" onchange="gID(${iY},${iM}).dated[${i}].date=this.value;sI();" style="width:60px;"></td>
     <td><select style="background:${cc(iCats,r.cat)};border-radius:6px;border:none;outline:none;padding:3px;width:100%;font-weight:700;" onchange="gID(${iY},${iM}).dated[${i}].cat=this.value;sI();rInc();">${getCatOptionsHtml(iCats,r.cat)}</select></td>
     <td><input value="${r.desc||""}" oninput="gID(${iY},${iM}).dated[${i}].desc=this.value;sI();"></td>
-    <td><input value="${fmtStr(r.amount)}" oninput="gID(${iY},${iM}).dated[${i}].amount=fmtInp(this);sI();calcIncTotals();" onchange="rLedger();" style="text-align:right;"></td>
+    <td><input value="${fmtStr(r.amount)}" oninput="gID(${iY},${iM}).dated[${i}].amount=fmtInp(this);sI();calcIncTotals();" style="text-align:right;"></td>
+    <td style="text-align:center;"><input type="checkbox" ${r.exclude?"checked":""} onchange="gID(${iY},${iM}).dated[${i}].exclude=this.checked;sI();calcIncTotals();rInc();rLedger();"></td>
     <td style="text-align:center;"><button class="bsm" onclick="gID(${iY},${iM}).dated.splice(${i},1);sI();rInc();rLedger();">✕</button></td></tr>`;
   });
 }
-window.aFR=()=>{gID(iY,iM).fixed.push({cat:iCats[0]?iCats[0].name:"",desc:"",amount:""});sI();rInc();};
-window.aDR=()=>{gID(iY,iM).dated.push({date:"",cat:iCats[0]?iCats[0].name:"",desc:"",amount:""});sI();rInc();};
+window.aFR=()=>{gID(iY,iM).fixed.push({cat:iCats[0]?iCats[0].name:"",desc:"",amount:"",exclude:false});sI();rInc();};
+window.aDR=()=>{gID(iY,iM).dated.push({date:"",cat:iCats[0]?iCats[0].name:"",desc:"",amount:"",exclude:false});sI();rInc();};
 
 window.calcExpTotals = () => {
   const d = gED(eY, eM);
-  const allRows = d.fixed.concat(d.dated);
+  const allRows = d.fixed.concat(d.dated).filter(r => !r.exclude);
   const agg = {}; allRows.forEach(r => agg[r.cat||"기타"] = (agg[r.cat||"기타"]||0) + (+r.amount||0));
   drawDonut("edc", Object.keys(agg).map(k => ({name:k, amount:agg[k], color:cc(eCats,k)})), "edv", "el");
   document.getElementById("epill").textContent = "₩" + fmt(allRows.reduce((s,r) => s + (+r.amount||0), 0));
@@ -1111,25 +1124,27 @@ function rExp(){
   const df=document.getElementById("eDateFil")?document.getElementById("eDateFil").value.trim():"";
   const fT=document.getElementById("efb2");fT.innerHTML="";
   d.fixed.forEach((r,i)=>{
-    fT.innerHTML+=`<tr><td><select style="background:${cc(eCats,r.cat)};border-radius:6px;border:none;outline:none;padding:3px;width:100%;font-weight:700;" onchange="gED(${eY},${eM}).fixed[${i}].cat=this.value;sE();rExp();">${getCatOptionsHtml(eCats,r.cat)}</select></td>
+    fT.innerHTML+=`<tr style="opacity:${r.exclude?'0.4':'1'};"><td><select style="background:${cc(eCats,r.cat)};border-radius:6px;border:none;outline:none;padding:3px;width:100%;font-weight:700;" onchange="gED(${eY},${eM}).fixed[${i}].cat=this.value;sE();rExp();">${getCatOptionsHtml(eCats,r.cat)}</select></td>
     <td><input value="${r.desc||""}" oninput="gED(${eY},${eM}).fixed[${i}].desc=this.value;sE();"></td>
-    <td><input value="${fmtStr(r.amount)}" oninput="gED(${eY},${eM}).fixed[${i}].amount=fmtInp(this);sE();calcExpTotals();" onchange="rLedger();" style="text-align:right;"></td>
+    <td><input value="${fmtStr(r.amount)}" oninput="gED(${eY},${eM}).fixed[${i}].amount=fmtInp(this);sE();calcExpTotals();" style="text-align:right;"></td>
     <td style="text-align:center;"><select onchange="gED(${eY},${eM}).fixed[${i}].over=this.value;sE();rExp();"><option value="">-</option><option value="과소비"${r.over==="과소비"?" selected":""}>과소비</option></select></td>
+    <td style="text-align:center;"><input type="checkbox" ${r.exclude?"checked":""} onchange="gED(${eY},${eM}).fixed[${i}].exclude=this.checked;sE();calcExpTotals();rExp();rLedger();"></td>
     <td style="text-align:center;"><button class="bsm" onclick="gED(${eY},${eM}).fixed.splice(${i},1);sE();rExp();rLedger();">✕</button></td></tr>`;
   });
   const dT=document.getElementById("edb");dT.innerHTML="";
   d.dated.forEach((r,i)=>{
     if(df && !String(r.date).includes(df)) return;
-    dT.innerHTML+=`<tr><td><input value="${r.date||""}" onchange="gED(${eY},${eM}).dated[${i}].date=this.value;sE();" style="width:60px;"></td>
+    dT.innerHTML+=`<tr style="opacity:${r.exclude?'0.4':'1'};"><td><input value="${r.date||""}" onchange="gED(${eY},${eM}).dated[${i}].date=this.value;sE();" style="width:60px;"></td>
     <td><select style="background:${cc(eCats,r.cat)};border-radius:6px;border:none;outline:none;padding:3px;width:100%;font-weight:700;" onchange="gED(${eY},${eM}).dated[${i}].cat=this.value;sE();rExp();">${getCatOptionsHtml(eCats,r.cat)}</select></td>
     <td><input value="${r.desc||""}" oninput="gED(${eY},${eM}).dated[${i}].desc=this.value;sE();"></td>
-    <td><input value="${fmtStr(r.amount)}" oninput="gED(${eY},${eM}).dated[${i}].amount=fmtInp(this);sE();calcExpTotals();" onchange="rLedger();" style="text-align:right;"></td>
+    <td><input value="${fmtStr(r.amount)}" oninput="gED(${eY},${eM}).dated[${i}].amount=fmtInp(this);sE();calcExpTotals();" style="text-align:right;"></td>
     <td style="text-align:center;"><select onchange="gED(${eY},${eM}).dated[${i}].over=this.value;sE();rExp();"><option value="">-</option><option value="과소비"${r.over==="과소비"?" selected":""}>과소비</option></select></td>
+    <td style="text-align:center;"><input type="checkbox" ${r.exclude?"checked":""} onchange="gED(${eY},${eM}).dated[${i}].exclude=this.checked;sE();calcExpTotals();rExp();rLedger();"></td>
     <td style="text-align:center;"><button class="bsm" onclick="gED(${eY},${eM}).dated.splice(${i},1);sE();rExp();rLedger();">✕</button></td></tr>`;
   });
 }
-window.aEF=()=>{gED(eY,eM).fixed.push({cat:eCats[0]?eCats[0].name:"",desc:"",amount:"",over:""});sE();rExp();};
-window.aED=()=>{gED(eY,eM).dated.push({date:"",cat:eCats[0]?eCats[0].name:"",desc:"",amount:"",over:""});sE();rExp();};
+window.aEF=()=>{gED(eY,eM).fixed.push({cat:eCats[0]?eCats[0].name:"",desc:"",amount:"",over:"",exclude:false});sE();rExp();};
+window.aED=()=>{gED(eY,eM).dated.push({date:"",cat:eCats[0]?eCats[0].name:"",desc:"",amount:"",over:"",exclude:false});sE();rExp();};
 
 /* ================= 3: 랜덤스쿱 ================= */
 const SC_RULES_DEF=()=>[["🍅 달성률 10%당 1스쿱🥄"],["🍅 네잎클로버 파츠는 한 번 더!🍀"],["🍅 100% 달성시 한 번 더! ✨"],["🍅 큰 파츠 개당 1,000원💎"],["🍅 주간 총 금액 다음 주에 매수! 💸"]];
@@ -1259,13 +1274,13 @@ function rNVTotal(){
   
   const tb=document.getElementById("nvtb");
   ensureArr(d.rows).forEach((r,i)=>{
-    tb.innerHTML+=`<tr>
+    tb.innerHTML+=`<tr style="opacity:${r.exclude?'0.4':'1'};">
     <td><input value="${r.date||""}" oninput="gNvD(${nvY},${nvM}).rows[${i}].date=this.value;sNv();" style="width:100%;text-align:center;"></td>
     <td><select style="background:${cc(nvCats,r.cat)};border-radius:6px;border:none;outline:none;padding:3px;width:100%;font-weight:700;" onchange="gNvD(${nvY},${nvM}).rows[${i}].cat=this.value;sNv();rNVTotal();">${getCatOptionsHtml(nvCats,r.cat)}</select></td>
     <td><input value="${r.tk||""}" oninput="gNvD(${nvY},${nvM}).rows[${i}].tk=this.value;sNv();"></td>
     <td><input value="${r.qty||""}" oninput="gNvD(${nvY},${nvM}).rows[${i}].qty=this.value;sNv();" style="text-align:center;"></td>
     <td><input value="${fmtStr(r.pr)}" oninput="gNvD(${nvY},${nvM}).rows[${i}].pr=fmtInp(this); calcNvAutoSum();" style="text-align:right;"></td>
-    <td style="text-align:center;"><input type="checkbox" ${r.exclude?"checked":""} onchange="gNvD(${nvY},${nvM}).rows[${i}].exclude=this.checked; calcNvAutoSum();"></td>
+    <td style="text-align:center;"><input type="checkbox" ${r.exclude?"checked":""} onchange="gNvD(${nvY},${nvM}).rows[${i}].exclude=this.checked; calcNvAutoSum(); rNVTotal();"></td>
     <td style="text-align:center;"><button class="bsm" onclick="gNvD(${nvY},${nvM}).rows.splice(${i},1);sNv();rNVTotal();">✕</button></td>
     </tr>`;
   });
@@ -1379,8 +1394,8 @@ function getMonthlyStats(p, y, m) {
      const l = appData[p].lgD && appData[p].lgD[y] && appData[p].lgD[y][m] ? appData[p].lgD[y][m] : {salary:0};
      const n = appData[p].nvD && appData[p].nvD[y] && appData[p].nvD[y][m] ? appData[p].nvD[y][m] : {manualTotal:0};
      
-     inc = ensureArr(i.fixed).concat(ensureArr(i.dated)).reduce((s,r)=>s+(+r.amount||0),0) + (+l.salary||0);
-     exp = ensureArr(e.fixed).concat(ensureArr(e.dated)).reduce((s,r)=>s+(+r.amount||0),0);
+     inc = ensureArr(i.fixed).concat(ensureArr(i.dated)).filter(r=>!r.exclude).reduce((s,r)=>s+(+r.amount||0),0) + (+l.salary||0);
+     exp = ensureArr(e.fixed).concat(ensureArr(e.dated)).filter(r=>!r.exclude).reduce((s,r)=>s+(+r.amount||0),0);
      inv = +(n.manualTotal)||0;
   }
   return { inc, exp, inv };
