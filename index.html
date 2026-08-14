@@ -190,7 +190,7 @@ input.ti:focus{border-color:var(--main-color);}
 .mb2{background:#fff;border-radius:20px;padding:24px;max-width:560px;width:92%;display:flex;flex-direction:column;gap:14px;box-shadow:0 8px 40px rgba(0,0,0,.2);max-height:90vh;overflow-y:auto;}
 .mt2{font-size:16px;font-weight:700;}
 .mf{width:100%;border-radius:12px;overflow:hidden;border:2px solid var(--sub-color);}
-.mc{width:100%;display:flex;flex-direction:column;padding:20px;position:relative;overflow:hidden;gap:8px;background:linear-gradient(135deg,var(--bg-color),var(--sub-bg));}
+.mc{width:100%;display:flex;flex-direction:column;padding:20px;position:relative;overflow:hidden;gap:8px;background:var(--bg-color);}
 .mbs{display:flex;gap:10px;}
 .mbs button{flex:1;padding:10px;border-radius:12px;font-family:"Poor Story",cursive;font-size:14px;font-weight:700;border:none;cursor:pointer;}
 .mcl{background:#f0f0f0;color:#666;}
@@ -553,6 +553,25 @@ input.ti:focus{border-color:var(--main-color);}
       </div>
     </div>
 
+    <!-- 추가된 주차별 자산 변동 기록 -->
+    <div class="ws" style="margin-top:16px;">
+      <div class="stit"><h3>📅 주차별 자산 변동 기록 (스냅샷)</h3></div>
+      <div class="dtw" style="overflow-x:auto;">
+        <table class="dt" style="min-width:580px;">
+          <thead><tr>
+            <th style="width:100px">날짜</th>
+            <th>총 자산</th>
+            <th>총 부채</th>
+            <th>순자산</th>
+            <th>전회 대비 변동</th>
+            <th style="width:44px">삭제</th>
+          </tr></thead>
+          <tbody id="aswk_tb"></tbody>
+        </table>
+        <button class="arb" onclick="saveAsSnapshot()">＋ 현재 자산/부채 스냅샷 기록하기</button>
+      </div>
+    </div>
+
     <div class="ws" style="margin-top:16px;">
       <div class="stit"><h3>💰 현금 및 저축 자산</h3></div>
       <div class="dtw" style="overflow-x:auto;">
@@ -788,8 +807,8 @@ if (urlParams.get('key')) {
 
 // 통합 앱 데이터 기본 뼈대
 let appData = {
-  zzanto:  { iD:{}, eD:{}, lgD:{}, nvD:{}, scD:{}, asD:{main:{details:[], cashDetails:[], liabilities:[]}}, iCats:[], eCats:[], nvCats:[] },
-  jjangam: { iD:{}, eD:{}, lgD:{}, nvD:{}, scD:{}, asD:{main:{details:[], cashDetails:[], liabilities:[]}}, iCats:[], eCats:[], nvCats:[] },
+  zzanto:  { iD:{}, eD:{}, lgD:{}, nvD:{}, scD:{}, asD:{main:{details:[], cashDetails:[], liabilities:[], weeklyLogs:[]}}, iCats:[], eCats:[], nvCats:[] },
+  jjangam: { iD:{}, eD:{}, lgD:{}, nvD:{}, scD:{}, asD:{main:{details:[], cashDetails:[], liabilities:[], weeklyLogs:[]}}, iCats:[], eCats:[], nvCats:[] },
   joint:   { goalTitle: "신혼집 마련 🏠", goalAmount: "130000000", goalZzanto: "100000000", goalJjangam: "30000000" }
 };
 
@@ -942,15 +961,44 @@ function checkDefaults() {
   if(!eCats || eCats.length===0) { eCats = defE; saveToFB("eCats", eCats); }
   if(!nvCats || nvCats.length===0) { nvCats = [{name:"투자",color:"#ffb3ba"}]; saveToFB("nvCats", nvCats); }
   
-  if(!asD.main) asD.main = { goal: "100000000", details:[], cashDetails:[], liabilities:[], nsaCats:[{name:"시장지수",color:"#ffb3ba"}], midCats:[], subs:[], typeCats:[{name:"현금성자산",color:"#bae1ff"}, {name:"저축",color:"#baffc9"}, {name:"투자자산",color:"#ffb3ba"}] };
+  if(!asD.main) asD.main = { goal: "100000000", details:[], cashDetails:[], liabilities:[], weeklyLogs:[], nsaCats:[{name:"시장지수",color:"#ffb3ba"}], midCats:[], subs:[], typeCats:[{name:"현금성자산",color:"#bae1ff"}, {name:"저축",color:"#baffc9"}, {name:"투자자산",color:"#ffb3ba"}] };
   asD.main.details = ensureArr(asD.main.details);
   asD.main.cashDetails = ensureArr(asD.main.cashDetails);
   asD.main.liabilities = ensureArr(asD.main.liabilities);
+  if(!asD.main.weeklyLogs || !Array.isArray(asD.main.weeklyLogs)) asD.main.weeklyLogs = [];
 }
 
 function gLgData(y,m){ if(!lgD[y])lgD[y]={}; if(!lgD[y][m])lgD[y][m]={salary:"",memos:{}}; return lgD[y][m]; }
-function gID(y,m){ if(!iD[y])iD[y]={}; if(!iD[y][m]){iD[y][m]={fixed:[],dated:[]}; sI();} iD[y][m].fixed=ensureArr(iD[y][m].fixed); iD[y][m].dated=ensureArr(iD[y][m].dated); return iD[y][m]; }
-function gED(y,m){ if(!eD[y])eD[y]={}; if(!eD[y][m]){eD[y][m]={fixed:[],dated:[]}; sE();} eD[y][m].fixed=ensureArr(eD[y][m].fixed); eD[y][m].dated=ensureArr(eD[y][m].dated); return eD[y][m]; }
+function gID(y,m){ 
+  if(!iD[y])iD[y]={}; 
+  if(!iD[y][m]){
+    let initData = {fixed:[], dated:[]};
+    // 이전 달 데이터 깊은 복사 이월 로직
+    let pM = m - 1; let pY = y;
+    if (pM === 0) { pM = 12; pY = y - 1; }
+    if (iD[pY] && iD[pY][pM] && iD[pY][pM].fixed && iD[pY][pM].fixed.length > 0) {
+      initData.fixed = JSON.parse(JSON.stringify(iD[pY][pM].fixed)); // 깊은 복사
+    }
+    iD[y][m] = initData; 
+    sI();
+  } 
+  iD[y][m].fixed=ensureArr(iD[y][m].fixed); iD[y][m].dated=ensureArr(iD[y][m].dated); return iD[y][m]; 
+}
+function gED(y,m){ 
+  if(!eD[y])eD[y]={}; 
+  if(!eD[y][m]){
+    let initData = {fixed:[], dated:[]};
+    // 이전 달 데이터 깊은 복사 이월 로직
+    let pM = m - 1; let pY = y;
+    if (pM === 0) { pM = 12; pY = y - 1; }
+    if (eD[pY] && eD[pY][pM] && eD[pY][pM].fixed && eD[pY][pM].fixed.length > 0) {
+      initData.fixed = JSON.parse(JSON.stringify(eD[pY][pM].fixed)); // 깊은 복사
+    }
+    eD[y][m] = initData;
+    sE();
+  } 
+  eD[y][m].fixed=ensureArr(eD[y][m].fixed); eD[y][m].dated=ensureArr(eD[y][m].dated); return eD[y][m]; 
+}
 function gNvD(y,m){ if(!nvD[y])nvD[y]={}; if(!nvD[y][m]){nvD[y][m]={total:"",rows:[],manualTotal:""}; sNv();} nvD[y][m].rows=ensureArr(nvD[y][m].rows); return nvD[y][m]; }
 function gAsD(){ 
   checkDefaults(); 
@@ -959,6 +1007,7 @@ function gAsD(){
   if(!d.nsaCats || !Array.isArray(d.nsaCats)) d.nsaCats = [{name:"시장지수",color:"#ffb3ba"}];
   if(!d.midCats || !Array.isArray(d.midCats)) d.midCats = [];
   if(!d.subs || !Array.isArray(d.subs)) d.subs = [];
+  if(!d.weeklyLogs || !Array.isArray(d.weeklyLogs)) d.weeklyLogs = [];
   return d; 
 }
 
@@ -1340,6 +1389,21 @@ window.updateAsTotals = () => {
   drawDonut("asdc2", Object.keys(invAgg).map(k=>({name:k,amount:invAgg[k],color:cc(d.nsaCats,k)})), "asdv2", "asl2");
 };
 
+// 스냅샷 저장 함수
+window.saveAsSnapshot = () => {
+  const d = gAsD();
+  let assets = 0, liabs = 0;
+  d.details.forEach(r => assets += (+r.amt||0));
+  d.cashDetails.forEach(r => assets += (+r.amt||0));
+  d.liabilities.forEach(r => liabs += (+r.amt||0));
+  
+  let today = new Date();
+  let dateStr = today.getFullYear() + "-" + String(today.getMonth()+1).padStart(2,'0') + "-" + String(today.getDate()).padStart(2,'0');
+  
+  d.weeklyLogs.push({ date: dateStr, a: assets, l: liabs, n: assets - liabs });
+  sAs(); rAs();
+};
+
 function rAs(){
   const d = gAsD();
   updateAsTotals(); 
@@ -1349,6 +1413,27 @@ function rAs(){
     const arr = tp==="type"?d.typeCats:tp==="nsa"?d.nsaCats:tp==="mid"?d.midCats:d.subs;
     const w=document.getElementById(tp+"chips");if(!w)return;w.innerHTML="";
     arr.forEach((c,i)=>{ w.innerHTML+=`<div class="chip" style="background:${c.color}">${c.name}<span class="xd" onclick="gAsD().${tp==='type'?'typeCats':tp==='nsa'?'nsaCats':tp==='mid'?'midCats':'subs'}.splice(${i},1);sAs();rAs();">✕</span></div>`; });
+  });
+  
+  // 주차별 자산 변동 스냅샷 테이블
+  const wkT = document.getElementById("aswk_tb"); wkT.innerHTML = "";
+  d.weeklyLogs.forEach((log, i) => {
+    let diffStr = "-";
+    let diffColor = "var(--text-dark)";
+    if (i > 0) {
+      let diff = log.n - d.weeklyLogs[i-1].n;
+      if (diff > 0) { diffStr = "▲ " + fmt(diff); diffColor = "#2e7d32"; }
+      else if (diff < 0) { diffStr = "▼ " + fmt(Math.abs(diff)); diffColor = "#e8453c"; }
+      else { diffStr = "변동없음"; }
+    }
+    wkT.innerHTML += `<tr>
+      <td><input value="${log.date}" oninput="gAsD().weeklyLogs[${i}].date=this.value; sAs();" style="width:100%;text-align:center;border:none;background:transparent;font-family:'Poor Story',cursive;font-size:13px;outline:none;"></td>
+      <td style="text-align:right;">₩${fmt(log.a)}</td>
+      <td style="text-align:right;color:#e8453c;">₩${fmt(log.l)}</td>
+      <td style="text-align:right;font-weight:700;">₩${fmt(log.n)}</td>
+      <td style="text-align:right;color:${diffColor};font-weight:700;">${diffStr}</td>
+      <td style="text-align:center;"><button class="bsm" onclick="gAsD().weeklyLogs.splice(${i},1); sAs(); rAs();">✕</button></td>
+    </tr>`;
   });
 
   const cT=document.getElementById("cashtb");cT.innerHTML="";
@@ -1528,19 +1613,29 @@ function bScCard(){
     let totalAll=0;let rows="";
     for(let wk=1;wk<=4;wk++){
       const wd=gScWk(scY,scM,wk); const wt=+wd.weekTotal||0;totalAll+=wt;
-      rows+=`<div class="cd-row"><span class="cd-label">${wk}주차 ${wd.dateRange||""}</span><span class="cd-value">₩${fmt(wt)}</span></div>`;
+      rows+=`<tr><td style="font-weight:700;">${wk}주차</td><td>${wd.dateRange||""}</td><td style="text-align:right;">₩${fmt(wt)}</td></tr>`;
     }
-    mc.innerHTML=`<div style="font-size:22px;font-weight:700;color:var(--main-color);margin-bottom:8px;">🥄 ${scY}년 ${scM}월 랜덤스쿱</div>${rows}
-      <div class="cd-row" style="background:var(--sub-bg);border-radius:8px;padding:6px 8px;margin-top:4px;"><span class="cd-label">월 합계</span><span class="cd-value" style="color:var(--main-color);">₩${fmt(totalAll)}</span></div>`;
+    mc.innerHTML=`<div style="font-size:22px;font-weight:700;color:var(--main-color);margin-bottom:12px;text-align:center;">🥄 ${scY}년 ${scM}월 랜덤스쿱</div>
+    <table class="dt" style="width:100%;border:2px solid var(--sub-color);background:#fff;">
+      <thead style="background:var(--sub-bg);"><tr><th>주차</th><th>기간</th><th>금액</th></tr></thead>
+      <tbody>${rows}</tbody>
+      <tfoot style="background:var(--sub-bg);font-weight:700;"><tr><td colspan="2" style="text-align:center;">월 합계</td><td style="text-align:right;color:var(--main-color);">₩${fmt(totalAll)}</td></tr></tfoot>
+    </table>`;
   } else {
     const wd=gScWk(scY,scM,scWk); const days=["월","화","수","목","금"]; let rows="";
     ensureArr(wd.rows).forEach(row=>{
-      rows+=`<div class="cd-section">${row.label}</div><div style="display:grid; grid-template-columns: repeat(5, 1fr); gap:4px;">`;
-      ensureArr(row.vals).forEach((v,i)=>{ if(i<5) rows+=`<div style="text-align:center;background:var(--sub-bg);border-radius:6px;padding:4px 2px;font-size:11px;min-width:0;"><div style="font-size:9px;color:var(--text-muted);margin-bottom:2px;">${days[i]}</div><div style="font-weight:700;color:var(--text-dark);">${v||"—"}</div></div>`; });
-      rows+="</div>";
+      let tds = `<td style="font-weight:700;background:var(--sub-bg);">${row.label}</td>`;
+      ensureArr(row.vals).forEach((v,i)=>{ if(i<5) tds+=`<td style="text-align:center;">${v||"—"}</td>`; });
+      rows+=`<tr>${tds}</tr>`;
     });
-    mc.innerHTML=`<div style="font-size:22px;font-weight:700;color:var(--main-color);margin-bottom:8px;">🥄 ${scWk}주차 ${wd.dateRange||""}</div>${rows}
-      <div class="cd-row" style="background:var(--sub-bg);border-radius:8px;padding:6px 8px;margin-top:6px;"><span class="cd-label">주간 합계</span><span class="cd-value" style="color:var(--main-color);">₩${fmt(wd.weekTotal)}</span></div>`;
+    mc.innerHTML=`<div style="font-size:20px;font-weight:700;color:var(--main-color);margin-bottom:12px;text-align:center;">🥄 ${scY}년 ${scM}월 ${scWk}주차 (${wd.dateRange||""})</div>
+    <table class="dt" style="width:100%;border:2px solid var(--sub-color);background:#fff;">
+      <thead style="background:var(--sub-bg);"><tr><th>항목</th>${days.map(d=>`<th>${d}</th>`).join("")}</tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div style="background:var(--sub-bg);border-radius:8px;padding:8px 12px;margin-top:12px;display:flex;justify-content:space-between;font-weight:700;border:2px solid var(--sub-color);">
+      <span>주간 합계</span><span style="color:var(--main-color);">₩${fmt(wd.weekTotal)}</span>
+    </div>`;
   }
 }
 window.dSC = function(){
