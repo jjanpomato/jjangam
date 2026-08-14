@@ -485,7 +485,9 @@ input.ti:focus{border-color:var(--main-color);}
     <div id="capture_t5" style="display:flex; flex-direction:column; gap:16px; width:100%;">
       <div class="mb">
         <h2 id="tab4_title">💼 자산 및 부채 현황</h2>
-        <button class="sav" onclick="saveForSNS('capture_t5', '자산현황')">📸 SNS 저장</button>
+        <!-- ★ 추가된 공유용 캡처 버튼 -->
+        <button class="sav" style="background:#5c7aff; margin-left:auto; margin-right:8px;" onclick="openSnsShareModal()">📸 공유용 저장</button>
+        <button class="sav" style="margin-left:0;" onclick="saveForSNS('capture_t5', '자산현황')">📸 SNS 저장</button>
       </div>
       <div class="as-goal-row" style="grid-template-columns: 1fr 1fr 1fr;">
         <div class="as-goal-box">
@@ -553,7 +555,7 @@ input.ti:focus{border-color:var(--main-color);}
       </div>
     </div>
 
-    <!-- 추가된 주차별 자산 변동 기록 -->
+    <!-- 주차별 자산 변동 기록 -->
     <div class="ws" style="margin-top:16px;">
       <div class="stit"><h3>📅 주차별 자산 변동 기록 (스냅샷)</h3></div>
       <div class="dtw" style="overflow-x:auto;">
@@ -788,6 +790,54 @@ input.ti:focus{border-color:var(--main-color);}
     <div class="mbs">
       <button class="mcl" onclick="document.getElementById('scmo').classList.remove('open')">닫기</button>
       <button style="background:linear-gradient(135deg,var(--main-color),var(--main-grad-2));color:#fff;" id="scdl" onclick="dSC()">📸 PNG 저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- ★ 자산/부채 SNS 공유용 모달창 추가 -->
+<div class="mo" id="snsShareMo">
+  <div class="mb2" style="max-width:480px;">
+    <div class="mt2">📸 포트폴리오 공유용 캡처 (금액 숨김)</div>
+    <div class="mf" id="snsShareMf" style="background:var(--bg-color);">
+      <div class="mc" id="snsShareMc" style="gap:16px;">
+        <div style="font-size:22px; font-weight:700; color:var(--main-color); text-align:center; padding:10px 0;">
+          💼 나의 자산 포트폴리오
+        </div>
+
+        <div class="wcard">
+          <div class="wt">📊 총 자산 비율</div>
+          <div class="crow">
+            <div class="dw"><canvas id="sns_dc1" width="140" height="140"></canvas></div>
+            <div class="ll2" id="sns_l1"></div>
+          </div>
+        </div>
+
+        <div class="wcard">
+          <div class="wt">📊 주식/투자 비율</div>
+          <div class="crow">
+            <div class="dw"><canvas id="sns_dc2" width="140" height="140"></canvas></div>
+            <div class="ll2" id="sns_l2"></div>
+          </div>
+        </div>
+
+        <div class="wcard">
+          <div class="wt">📅 주차별 자산 변동</div>
+          <table style="width:100%; border-collapse:collapse; font-size:14px; background:#fff; border:2px solid var(--sub-color); text-align:center;">
+            <thead style="background:var(--sub-bg);">
+              <tr>
+                <th style="padding:10px; border:1px solid var(--sub-color);">날짜</th>
+                <th style="padding:10px; border:1px solid var(--sub-color);">변동 내역</th>
+              </tr>
+            </thead>
+            <tbody id="sns_wk_tb"></tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+    <div class="mbs">
+      <button class="mcl" onclick="document.getElementById('snsShareMo').classList.remove('open')">닫기</button>
+      <button style="background:linear-gradient(135deg,var(--main-color),var(--main-grad-2));color:#fff;" onclick="downloadSnsShare()">📸 PNG 저장</button>
     </div>
   </div>
 </div>
@@ -1066,6 +1116,44 @@ function drawDonut(cid,items,vid,lid){
   ctx.beginPath();ctx.arc(cx,cy,r-10,0,2*Math.PI);ctx.fillStyle="#fff";ctx.fill();
 }
 
+/* ★ 새로 추가된 SNS 공유용 차트 그리기 (금액은 숨기고 퍼센트만 표시) */
+function drawDonutShare(cid, items, lid) {
+    const canvas = document.getElementById(cid); if(!canvas) return;
+    const ctx = canvas.getContext("2d"); const w = canvas.width, h = canvas.height, r = Math.min(w,h)/2-8, cx = w/2, cy = h/2;
+    ctx.clearRect(0,0,w,h);
+    const total = items.reduce((s,it) => s + (+it.amount||0), 0);
+
+    if(lid) {
+        const ll = document.getElementById(lid); ll.innerHTML = "";
+        items.forEach(it => {
+            if(!it.amount || +it.amount === 0) return;
+            const pct = total ? Math.round((+it.amount/total)*100) : 0;
+            const li = document.createElement("div"); li.className = "li";
+            li.innerHTML = `<div class="ld" style="background:${it.color}"></div><span>${it.name}</span><span class="lp">${pct}%</span>`;
+            ll.appendChild(li);
+        });
+    }
+
+    if(total === 0) {
+        ctx.beginPath(); ctx.arc(cx, cy, r, 0, 2*Math.PI); ctx.lineWidth = 22; ctx.strokeStyle = "#f0f0f0"; ctx.stroke();
+        return;
+    }
+    let angle = -Math.PI/2;
+    items.forEach(it => {
+        if(!it.amount || +it.amount === 0) return;
+        const sweep = (+it.amount/total)*2*Math.PI;
+        ctx.beginPath(); ctx.arc(cx, cy, r, angle, angle+sweep); ctx.lineWidth = 22; ctx.strokeStyle = it.color; ctx.stroke();
+        angle += sweep;
+    });
+    ctx.beginPath(); ctx.arc(cx, cy, r-10, 0, 2*Math.PI); ctx.fillStyle = "#fff"; ctx.fill();
+
+    ctx.fillStyle = "var(--text-muted)";
+    ctx.font = "bold 14px 'Poor Story'";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("비율", cx, cy);
+}
+
 function buildYM(yid,mid,cy,cm){
   const ys=document.getElementById(yid),ms=document.getElementById(mid); if(!ys||!ms)return; ys.innerHTML="";ms.innerHTML="";
   for(let y=CUR_Y;y<=CUR_Y+4;y++){const o=document.createElement("option");o.value=y;o.textContent=y+"년";if(y===cy)o.selected=true;ys.appendChild(o);}
@@ -1283,7 +1371,6 @@ function bSWUI(){
     });
     tbl.appendChild(tbody);
     const wrap2=document.createElement("div");wrap2.style.overflowX="auto";wrap2.appendChild(tbl);
-    card.appendChild(wrap2);
     const totRow=document.createElement("div");totRow.style.cssText="display:flex;align-items:center;gap:10px;margin-top:10px;padding-top:8px;border-top:1px dashed var(--sub-color);";
     totRow.innerHTML=`<span style="font-size:13px;font-weight:700;color:var(--text-muted);">주간 총금액</span><input class="ti" id="sc_tot_inp_${wk}" value="${fmtStr(wd.weekTotal)}" placeholder="총 금액 입력" oninput="updateScWeekTotal(${wk},fmtInp(this))" style="max-width:160px;text-align:right;">`;
     card.appendChild(totRow); wrap.appendChild(card);
@@ -1396,6 +1483,74 @@ window.updateAsTotals = () => {
 
   drawDonut("asdc1", Object.keys(typeAgg).map(k=>({name:k,amount:typeAgg[k],color:cc(d.typeCats,k)})), "asdv1", "asl1");
   drawDonut("asdc2", Object.keys(invAgg).map(k=>({name:k,amount:invAgg[k],color:cc(d.nsaCats,k)})), "asdv2", "asl2");
+};
+
+// ★ 자산 탭 SNS 공유용 모달창 열기
+window.openSnsShareModal = () => {
+    const d = gAsD();
+    let assets = 0;
+    const typeAgg = {}, invAgg = {};
+
+    d.details.forEach(r=>{
+        let amt = (+r.amt||0);
+        assets += amt;
+        let type = r.type || (d.typeCats.length > 0 ? d.typeCats[0].name : "미지정");
+        typeAgg[type] = (typeAgg[type]||0) + amt;
+        invAgg[r.mc||"미지정"] = (invAgg[r.mc||"미지정"]||0) + amt;
+    });
+    d.cashDetails.forEach(r=>{
+        let amt = (+r.amt||0);
+        assets += amt;
+        let type = r.type || (d.typeCats.length > 0 ? d.typeCats[0].name : "미지정");
+        typeAgg[type] = (typeAgg[type]||0) + amt;
+    });
+
+    const mo = document.getElementById("snsShareMo");
+    mo.classList.add("open");
+
+    // 1. 총자산 비율 도넛 그리기 (금액 표시 없이 퍼센트만)
+    drawDonutShare("sns_dc1", Object.keys(typeAgg).map(k=>({name:k,amount:typeAgg[k],color:cc(d.typeCats,k)})), "sns_l1");
+
+    // 2. 주식/투자 비율 도넛 그리기 (금액 표시 없이 퍼센트만)
+    drawDonutShare("sns_dc2", Object.keys(invAgg).map(k=>({name:k,amount:invAgg[k],color:cc(d.nsaCats,k)})), "sns_l2");
+
+    // 3. 주차별 변동 기록 그리기 (날짜 + 변동내역만)
+    const wkT = document.getElementById("sns_wk_tb");
+    wkT.innerHTML = "";
+    if(d.weeklyLogs.length === 0) {
+        wkT.innerHTML = `<tr><td colspan="2" style="padding:16px; text-align:center; color:var(--text-muted);">스냅샷 기록이 없습니다.</td></tr>`;
+    } else {
+        d.weeklyLogs.forEach((log, i) => {
+            let diffStr = "-";
+            let diffColor = "var(--text-dark)";
+            if (i > 0) {
+                let diff = log.n - d.weeklyLogs[i-1].n;
+                if (diff > 0) { diffStr = "▲ " + fmt(diff) + " 원"; diffColor = "#2e7d32"; }
+                else if (diff < 0) { diffStr = "▼ " + fmt(Math.abs(diff)) + " 원"; diffColor = "#e8453c"; }
+                else { diffStr = "변동없음"; }
+            }
+            wkT.innerHTML += `<tr>
+                <td style="text-align:center; padding:10px; border:1px solid var(--sub-color); font-weight:700;">${log.date}</td>
+                <td style="text-align:right; padding:10px; color:${diffColor}; font-weight:700; border:1px solid var(--sub-color);">${diffStr}</td>
+            </tr>`;
+        });
+    }
+};
+
+// ★ 자산 탭 SNS 공유용 이미지 저장 로직
+window.downloadSnsShare = function(){
+    const mb2 = document.querySelector("#snsShareMo .mb2"); 
+    const oldMax = mb2.style.maxHeight; const oldOver = mb2.style.overflowY;
+    mb2.style.maxHeight = "none"; mb2.style.overflowY = "visible";
+    
+    setTimeout(()=>{ html2canvas(document.getElementById("snsShareMf"),{scale:2,useCORS:true}).then(c=>{
+        const a = document.createElement("a");
+        const dateStr = new Date().toISOString().slice(0,10);
+        a.download = `포트폴리오_공유용_${activeProfile}_${dateStr}.png`;
+        a.href = c.toDataURL(); 
+        a.click();
+        mb2.style.maxHeight = oldMax; mb2.style.overflowY = oldOver;
+    }); }, 100);
 };
 
 // 스냅샷 저장 함수
