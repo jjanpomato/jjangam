@@ -219,7 +219,7 @@ input.ti:focus{border-color:var(--main-color);}
   </div>
   <div class="header-title-row">
     <span style="font-size:28px;">🍅🥔</span>
-    <h1>짠포마토의 기록 <span class="ver">v1.4</span></h1>
+    <h1>짠포마토의 기록 <span class="ver">v1.5</span></h1>
   </div>
   <div class="profile-switcher">
     <button id="prof_zzanto" class="prof-btn active" onclick="switchProfile('zzanto')">🍅 짠토</button>
@@ -828,8 +828,9 @@ window.db = firebase.database();
 
 function ensureArr(val) {
   if (!val) return [];
-  if (Array.isArray(val)) return val.filter(v => v !== null && typeof v === 'object');
-  if (typeof val === 'object') return Object.values(val).filter(v => v !== null && typeof v === 'object');
+  // 버그 수정됨: 원시타입(문자열 등)이 들어와도 날아가지 않도록 typeof 필터링 해제
+  if (Array.isArray(val)) return val.filter(v => v !== null); 
+  if (typeof val === 'object') return Object.values(val).filter(v => v !== null);
   return [];
 }
 
@@ -1625,36 +1626,56 @@ function bScCard(){
       const wtStr = String(wd.weekTotal).replace(/[^0-9]/g, '');
       const wt = parseInt(wtStr) || 0; 
       totalAll+=wt;
-      rows+=`<tr><td style="font-weight:700;text-align:center;">${wk}주차</td><td style="text-align:center;">${wd.dateRange||""}</td><td style="text-align:right;">₩${fmt(wt)}</td></tr>`;
+      rows+=`<tr>
+        <td style="border:1px solid var(--sub-color); font-weight:700; text-align:center; padding:8px;">${wk}주차</td>
+        <td style="border:1px solid var(--sub-color); text-align:center; padding:8px;">${wd.dateRange||""}</td>
+        <td style="border:1px solid var(--sub-color); text-align:right; padding:8px;">₩${fmt(wt)}</td>
+      </tr>`;
     }
     mc.innerHTML=`<div style="font-size:22px;font-weight:700;color:var(--main-color);margin-bottom:12px;text-align:center;">🥄 ${scY}년 ${scM}월 랜덤스쿱</div>
-    <table class="dt" style="width:100%;border:2px solid var(--sub-color);background:#fff;">
-      <thead style="background:var(--sub-bg);"><tr><th style="text-align:center;">주차</th><th style="text-align:center;">기간</th><th style="text-align:right;">금액</th></tr></thead>
+    <table style="width:100%;border-collapse:collapse;border:2px solid var(--sub-color);background:#fff;font-size:14px;">
+      <thead style="background:var(--sub-bg);">
+        <tr>
+          <th style="border:1px solid var(--sub-color);padding:8px;text-align:center;">주차</th>
+          <th style="border:1px solid var(--sub-color);padding:8px;text-align:center;">기간</th>
+          <th style="border:1px solid var(--sub-color);padding:8px;text-align:center;">금액</th>
+        </tr>
+      </thead>
       <tbody>${rows}</tbody>
-      <tfoot style="background:var(--sub-bg);font-weight:700;"><tr><td colspan="2" style="text-align:center;">월 합계</td><td style="text-align:right;color:var(--main-color);">₩${fmt(totalAll)}</td></tr></tfoot>
+      <tfoot style="background:var(--sub-bg);font-weight:700;">
+        <tr>
+          <td colspan="2" style="border:1px solid var(--sub-color);padding:8px;text-align:center;">월 합계</td>
+          <td style="border:1px solid var(--sub-color);padding:8px;text-align:right;color:var(--main-color);">₩${fmt(totalAll)}</td>
+        </tr>
+      </tfoot>
     </table>`;
   } else {
     const wd=gScWk(scY,scM,scWk); const days=["월","화","수","목","금"]; let rows="";
-    ensureArr(wd.rows).forEach((row, ri)=>{
-      let tds = `<td style="font-weight:700;background:var(--sub-bg);text-align:center;">${row.label}</td>`;
-      ensureArr(row.vals).forEach((v,i)=>{ 
+    (wd.rows || []).forEach((row, ri)=>{
+      let tds = `<td style="border:1px solid var(--sub-color);font-weight:700;background:var(--sub-bg);text-align:center;padding:8px;">${row.label}</td>`;
+      (row.vals || []).forEach((v,i)=>{ 
         if(i<5) {
-            let disp = v || "—";
+            let disp = v || "";
             // 리스트에서 5번째 항목(총 금액)일 때만 포맷 적용
-            if(disp !== "—" && ri === 5) {
+            if(disp !== "" && ri === 5) {
                 disp = "₩" + fmt(v);
             }
-            tds+=`<td style="text-align:center;">${disp}</td>`;
+            tds+=`<td style="border:1px solid var(--sub-color);text-align:center;padding:8px;">${disp}</td>`;
         } 
       });
       rows+=`<tr>${tds}</tr>`;
     });
     mc.innerHTML=`<div style="font-size:20px;font-weight:700;color:var(--main-color);margin-bottom:12px;text-align:center;">🥄 ${scY}년 ${scM}월 ${scWk}주차 (${wd.dateRange||""})</div>
-    <table class="dt" style="width:100%;border:2px solid var(--sub-color);background:#fff;">
-      <thead style="background:var(--sub-bg);"><tr><th style="text-align:center;">항목</th>${days.map(d=>`<th style="text-align:center;">${d}</th>`).join("")}</tr></thead>
+    <table style="width:100%;border-collapse:collapse;border:2px solid var(--sub-color);background:#fff;font-size:14px;">
+      <thead style="background:var(--sub-bg);">
+        <tr>
+          <th style="border:1px solid var(--sub-color);padding:8px;text-align:center;">항목</th>
+          ${days.map(d=>`<th style="border:1px solid var(--sub-color);padding:8px;text-align:center;">${d}</th>`).join("")}
+        </tr>
+      </thead>
       <tbody>${rows}</tbody>
     </table>
-    <div style="background:var(--sub-bg);border-radius:8px;padding:8px 12px;margin-top:12px;display:flex;justify-content:space-between;font-weight:700;border:2px solid var(--sub-color);">
+    <div style="background:var(--sub-bg);border-radius:8px;padding:10px 14px;margin-top:12px;display:flex;justify-content:space-between;font-weight:700;border:2px solid var(--sub-color);font-size:16px;">
       <span>주간 합계</span><span style="color:var(--main-color);">₩${fmt(wd.weekTotal)}</span>
     </div>`;
   }
