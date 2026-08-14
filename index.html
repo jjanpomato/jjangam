@@ -219,7 +219,7 @@ input.ti:focus{border-color:var(--main-color);}
   </div>
   <div class="header-title-row">
     <span style="font-size:28px;">🍅🥔</span>
-    <h1>짠포마토의 기록 <span class="ver">v1.3</span></h1>
+    <h1>짠포마토의 기록 <span class="ver">v1.4</span></h1>
   </div>
   <div class="profile-switcher">
     <button id="prof_zzanto" class="prof-btn active" onclick="switchProfile('zzanto')">🍅 짠토</button>
@@ -1260,15 +1260,23 @@ function bSWUI(){
     // 월~금만 보이게 수정
     const days=["월","화","수","목","금"];
     const thead=document.createElement("thead");
-    thead.innerHTML="<tr><th style='width:100px'>항목</th>"+days.map(d=>`<th>${d}</th>`).join("")+"</tr>";
+    thead.innerHTML="<tr><th style='width:100px;text-align:center;'>항목</th>"+days.map(d=>`<th style="text-align:center;">${d}</th>`).join("")+"</tr>";
     tbl.appendChild(thead);
     
     const tbody=document.createElement("tbody");
     wd.rows.forEach((row,ri)=>{
       const tr=document.createElement("tr");
-      let cells=`<td style="font-weight:700;color:var(--text-muted);font-size:12px;">${row.label}</td>`;
+      let cells=`<td style="font-weight:700;color:var(--text-muted);font-size:12px;text-align:center;">${row.label}</td>`;
       row.vals.forEach((v,vi)=>{
-        if (vi < 5) cells+=`<td><input value="${fmtStr(v)}" oninput="updateScVal(${wk},${ri},${vi},fmtInp(this))" style="text-align:center;min-width:50px;"></td>`;
+        if (vi < 5) {
+            // ri === 5 (총 금액) 행일 경우에만 금액 포맷팅(fmtInp) 강제 적용, 
+            // 나머지는 텍스트(예: O, X, 달성률 텍스트 등)를 자유롭게 입력하도록 허용
+            if (ri === 5) {
+                cells+=`<td><input class="lt-inp" value="${fmtStr(v)}" oninput="updateScVal(${wk},${ri},${vi},fmtInp(this))" style="text-align:center;font-size:13px;padding:4px 0;"></td>`;
+            } else {
+                cells+=`<td><input class="lt-inp" value="${v||""}" oninput="updateScVal(${wk},${ri},${vi},this.value)" style="text-align:center;font-size:13px;padding:4px 0;"></td>`;
+            }
+        }
       });
       tr.innerHTML=cells; tbody.appendChild(tr);
     });
@@ -1612,25 +1620,38 @@ function bScCard(){
   if(scWk===0){
     let totalAll=0;let rows="";
     for(let wk=1;wk<=4;wk++){
-      const wd=gScWk(scY,scM,wk); const wt=+wd.weekTotal||0;totalAll+=wt;
-      rows+=`<tr><td style="font-weight:700;">${wk}주차</td><td>${wd.dateRange||""}</td><td style="text-align:right;">₩${fmt(wt)}</td></tr>`;
+      const wd=gScWk(scY,scM,wk); 
+      // 숫자 제외한 문자 모두 제거해서 금액 합산 보장
+      const wtStr = String(wd.weekTotal).replace(/[^0-9]/g, '');
+      const wt = parseInt(wtStr) || 0; 
+      totalAll+=wt;
+      rows+=`<tr><td style="font-weight:700;text-align:center;">${wk}주차</td><td style="text-align:center;">${wd.dateRange||""}</td><td style="text-align:right;">₩${fmt(wt)}</td></tr>`;
     }
     mc.innerHTML=`<div style="font-size:22px;font-weight:700;color:var(--main-color);margin-bottom:12px;text-align:center;">🥄 ${scY}년 ${scM}월 랜덤스쿱</div>
     <table class="dt" style="width:100%;border:2px solid var(--sub-color);background:#fff;">
-      <thead style="background:var(--sub-bg);"><tr><th>주차</th><th>기간</th><th>금액</th></tr></thead>
+      <thead style="background:var(--sub-bg);"><tr><th style="text-align:center;">주차</th><th style="text-align:center;">기간</th><th style="text-align:right;">금액</th></tr></thead>
       <tbody>${rows}</tbody>
       <tfoot style="background:var(--sub-bg);font-weight:700;"><tr><td colspan="2" style="text-align:center;">월 합계</td><td style="text-align:right;color:var(--main-color);">₩${fmt(totalAll)}</td></tr></tfoot>
     </table>`;
   } else {
     const wd=gScWk(scY,scM,scWk); const days=["월","화","수","목","금"]; let rows="";
-    ensureArr(wd.rows).forEach(row=>{
-      let tds = `<td style="font-weight:700;background:var(--sub-bg);">${row.label}</td>`;
-      ensureArr(row.vals).forEach((v,i)=>{ if(i<5) tds+=`<td style="text-align:center;">${v||"—"}</td>`; });
+    ensureArr(wd.rows).forEach((row, ri)=>{
+      let tds = `<td style="font-weight:700;background:var(--sub-bg);text-align:center;">${row.label}</td>`;
+      ensureArr(row.vals).forEach((v,i)=>{ 
+        if(i<5) {
+            let disp = v || "—";
+            // 리스트에서 5번째 항목(총 금액)일 때만 포맷 적용
+            if(disp !== "—" && ri === 5) {
+                disp = "₩" + fmt(v);
+            }
+            tds+=`<td style="text-align:center;">${disp}</td>`;
+        } 
+      });
       rows+=`<tr>${tds}</tr>`;
     });
     mc.innerHTML=`<div style="font-size:20px;font-weight:700;color:var(--main-color);margin-bottom:12px;text-align:center;">🥄 ${scY}년 ${scM}월 ${scWk}주차 (${wd.dateRange||""})</div>
     <table class="dt" style="width:100%;border:2px solid var(--sub-color);background:#fff;">
-      <thead style="background:var(--sub-bg);"><tr><th>항목</th>${days.map(d=>`<th>${d}</th>`).join("")}</tr></thead>
+      <thead style="background:var(--sub-bg);"><tr><th style="text-align:center;">항목</th>${days.map(d=>`<th style="text-align:center;">${d}</th>`).join("")}</tr></thead>
       <tbody>${rows}</tbody>
     </table>
     <div style="background:var(--sub-bg);border-radius:8px;padding:8px 12px;margin-top:12px;display:flex;justify-content:space-between;font-weight:700;border:2px solid var(--sub-color);">
