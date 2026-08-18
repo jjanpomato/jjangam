@@ -219,7 +219,7 @@ input.ti:focus{border-color:var(--main-color);}
   </div>
   <div class="header-title-row">
     <span style="font-size:28px;">🍅🥔</span>
-    <h1>짠포마토의 기록 <span class="ver">v1.5</span></h1>
+    <h1>짠포마토의 기록 <span class="ver">v1.6</span></h1>
   </div>
   <div class="profile-switcher">
     <button id="prof_zzanto" class="prof-btn active" onclick="switchProfile('zzanto')">🍅 짠토</button>
@@ -485,7 +485,6 @@ input.ti:focus{border-color:var(--main-color);}
     <div id="capture_t5" style="display:flex; flex-direction:column; gap:16px; width:100%;">
       <div class="mb">
         <h2 id="tab4_title">💼 자산 및 부채 현황</h2>
-        <!-- ★ 추가된 공유용 캡처 버튼 -->
         <button class="sav" style="background:#5c7aff; margin-left:auto; margin-right:8px;" onclick="openSnsShareModal()">📸 공유용 저장</button>
         <button class="sav" style="margin-left:0;" onclick="saveForSNS('capture_t5', '자산현황')">📸 SNS 저장</button>
       </div>
@@ -654,118 +653,228 @@ input.ti:focus{border-color:var(--main-color);}
 <!-- ================= 🍅🥔 짠포마토(통합) 대시보드 뷰 ================= -->
 <div id="zzanpomato_view" style="display:none; width:100%; max-width:1100px; flex-direction:column; gap:16px;">
   
-  <div id="capture_jp" style="display:flex; flex-direction:column; gap:16px; width:100%;">
-    <div class="mb" style="display:flex; flex-direction:column; align-items:flex-start; gap:16px;">
-      <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
-        <h2 style="font-size:22px; color:var(--main-color);">🍅🥔 우리의 공동 목표</h2>
-        <button class="sav" onclick="saveForSNS('capture_jp', '공동대시보드')">📸 SNS 저장</button>
-      </div>
-      <div class="as-goal-row" style="width:100%; grid-template-columns: 1fr 1fr;">
-        <div class="as-goal-box">
-          <div class="as-goal-label">🍅 짠토 개인 목표 금액 (원)</div>
-          <input class="as-goal-input" id="jp_goal_zzanto" placeholder="예: 100000000" oninput="fmtInp(this)" style="color:#e8453c;">
-        </div>
-        <div class="as-goal-box">
-          <div class="as-goal-label">🥔 짠감 개인 목표 금액 (원)</div>
-          <input class="as-goal-input" id="jp_goal_jjangam" placeholder="예: 30000000" oninput="fmtInp(this)" style="color:#a67c52;">
-        </div>
-        <div class="as-goal-box">
-          <div class="as-goal-label">공동 목표 이름</div>
-          <input class="as-goal-input" id="jp_goal_title" placeholder="예: 신혼집 마련 🏠" style="color:var(--main-color);">
-        </div>
-        <div class="as-goal-box">
-          <div class="as-goal-label">공동 목표 금액 (원)</div>
-          <input class="as-goal-input" id="jp_goal_amount" placeholder="예: 130000000" oninput="fmtInp(this)" style="color:var(--main-color);">
-        </div>
-      </div>
-      <button class="sav" style="width:100%; padding:14px; font-size:15px; border-radius:12px;" onclick="saveZzanpomatoGoal()">목표 저장하기</button>
-    </div>
+  <!-- 서브 탭 바 -->
+  <div class="tab-bar" style="margin-bottom:10px;" id="jp_tabbar">
+    <button class="tab-btn active" onclick="swJp(0)">🎯 공동 목표</button>
+    <button class="tab-btn" onclick="swJp(1)">💳 커플 통장</button>
+  </div>
 
-    <div class="ws">
-      <div class="wt" style="font-size:18px;">🚀 우리의 여정 (순자산 기준)</div>
+  <!-- JP_TAB 0: 기존 공동 목표 대시보드 -->
+  <div id="jp_tab0" class="tab-page active">
+    <div id="capture_jp" style="display:flex; flex-direction:column; gap:16px; width:100%;">
+      <div class="mb" style="display:flex; flex-direction:column; align-items:flex-start; gap:16px;">
+        <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
+          <h2 style="font-size:22px; color:var(--main-color);">🍅🥔 우리의 공동 목표</h2>
+          <button class="sav" onclick="saveForSNS('capture_jp', '공동대시보드')">📸 SNS 저장</button>
+        </div>
+        <div class="as-goal-row" style="width:100%; grid-template-columns: 1fr 1fr;">
+          <div class="as-goal-box">
+            <div class="as-goal-label">🍅 짠토 개인 목표 금액 (원)</div>
+            <input class="as-goal-input" id="jp_goal_zzanto" placeholder="예: 100000000" oninput="fmtInp(this)" style="color:#e8453c;">
+          </div>
+          <div class="as-goal-box">
+            <div class="as-goal-label">🥔 짠감 개인 목표 금액 (원)</div>
+            <input class="as-goal-input" id="jp_goal_jjangam" placeholder="예: 30000000" oninput="fmtInp(this)" style="color:#a67c52;">
+          </div>
+          <div class="as-goal-box">
+            <div class="as-goal-label">공동 목표 이름</div>
+            <input class="as-goal-input" id="jp_goal_title" placeholder="예: 신혼집 마련 🏠" style="color:var(--main-color);">
+          </div>
+          <div class="as-goal-box">
+            <div class="as-goal-label">공동 목표 금액 (원)</div>
+            <input class="as-goal-input" id="jp_goal_amount" placeholder="예: 130000000" oninput="fmtInp(this)" style="color:var(--main-color);">
+          </div>
+        </div>
+        <button class="sav" style="width:100%; padding:14px; font-size:15px; border-radius:12px;" onclick="saveZzanpomatoGoal()">목표 저장하기</button>
+      </div>
+
+      <div class="ws">
+        <div class="wt" style="font-size:18px;">🚀 우리의 여정 (순자산 기준)</div>
+        
+        <!-- 짠토 진행률 -->
+        <div style="margin-top:20px;">
+          <div style="display:flex; justify-content:space-between; font-size:14px;">
+            <span style="font-weight:700; color:#e8453c;">🍅 짠토 달성률</span>
+            <span id="jp_prog_z_txt" style="font-weight:700; color:#e8453c;">0%</span>
+          </div>
+          <div class="joint-prog-bg" style="height:18px; border-color:#fddcdc; background:#fff0f0;">
+            <div id="jp_prog_z_bar" class="joint-prog-bar" style="background:#e8453c;"></div>
+          </div>
+        </div>
+
+        <!-- 짠감 진행률 -->
+        <div style="margin-top:16px;">
+          <div style="display:flex; justify-content:space-between; font-size:14px;">
+            <span style="font-weight:700; color:#a67c52;">🥔 짠감 달성률</span>
+            <span id="jp_prog_j_txt" style="font-weight:700; color:#a67c52;">0%</span>
+          </div>
+          <div class="joint-prog-bg" style="height:18px; border-color:#e6d5c3; background:#f0e6d8;">
+            <div id="jp_prog_j_bar" class="joint-prog-bar" style="background:#a67c52;"></div>
+          </div>
+        </div>
+
+        <hr style="border:0; border-top:2px dashed var(--sub-color); margin: 24px 0;">
+
+        <!-- 공동 진행률 -->
+        <div style="font-size:26px; font-weight:700; color:var(--main-color); text-align:center;" id="jp_total_networth">현재 순자산 합계: ₩0</div>
+        
+        <div style="display:flex; justify-content:space-between; margin-top:20px; font-size:14px;">
+          <span style="font-weight:700; color:var(--text-muted);" id="jp_goal_name_disp">공동 목표 달성률</span>
+          <span id="jp_progress_txt" style="font-weight:700; color:var(--main-color); font-size:18px;">0%</span>
+        </div>
+        <div class="joint-prog-bg" style="height:32px; border-width: 3px;">
+          <div id="jp_progress_bar" class="joint-prog-bar"></div>
+        </div>
+      </div>
+
+      <div class="mb" style="margin-top:10px;">
+        <h2 style="font-size:20px; color:var(--main-color);">🗓️ 월별 합산 대시보드</h2>
+        <select class="sc" id="jp_y" onchange="rZzanpomatoDashboard()"></select>
+        <select class="sc" id="jp_m" onchange="rZzanpomatoDashboard()"></select>
+      </div>
+
+      <div class="card-grid">
+        <!-- 총 수입 -->
+        <div class="ws">
+          <div class="wt">💚 이번 달 총 수입</div>
+          <div style="font-size:22px; font-weight:700; margin-bottom:12px; color:#2e7d32;" id="jp_m_inc">₩0</div>
+          <div style="font-size:14px; color:var(--text-muted); display:flex; justify-content:space-between;">
+            <span>🍅 짠토:</span> <span id="jp_m_inc_z" style="font-weight:700; color:#3a1a1a;">₩0</span>
+          </div>
+          <div style="font-size:14px; color:var(--text-muted); display:flex; justify-content:space-between; margin-top:4px;">
+            <span>🥔 짠감:</span> <span id="jp_m_inc_j" style="font-weight:700; color:#3e2723;">₩0</span>
+          </div>
+        </div>
+        <!-- 총 지출 -->
+        <div class="ws">
+          <div class="wt" style="color:#e8453c;">💸 이번 달 총 지출</div>
+          <div style="font-size:22px; font-weight:700; margin-bottom:12px; color:#e8453c;" id="jp_m_exp">₩0</div>
+          <div style="font-size:14px; color:var(--text-muted); display:flex; justify-content:space-between;">
+            <span>🍅 짠토:</span> <span id="jp_m_exp_z" style="font-weight:700; color:#3a1a1a;">₩0</span>
+          </div>
+          <div style="font-size:14px; color:var(--text-muted); display:flex; justify-content:space-between; margin-top:4px;">
+            <span>🥔 짠감:</span> <span id="jp_m_exp_j" style="font-weight:700; color:#3e2723;">₩0</span>
+          </div>
+        </div>
+        <!-- 총 저축/투자 -->
+        <div class="ws">
+          <div class="wt" style="color:#a67c52;">📈 이번 달 총 저축/투자</div>
+          <div style="font-size:22px; font-weight:700; margin-bottom:12px; color:#a67c52;" id="jp_m_inv">₩0</div>
+          <div style="font-size:14px; color:var(--text-muted); display:flex; justify-content:space-between;">
+            <span>🍅 짠토:</span> <span id="jp_m_inv_z" style="font-weight:700; color:#3a1a1a;">₩0</span>
+          </div>
+          <div style="font-size:14px; color:var(--text-muted); display:flex; justify-content:space-between; margin-top:4px;">
+            <span>🥔 짠감:</span> <span id="jp_m_inv_j" style="font-weight:700; color:#3e2723;">₩0</span>
+          </div>
+        </div>
+        <!-- 이달의 잉여 자금 -->
+        <div class="ws" style="background:var(--sub-bg);">
+          <div class="wt" style="color:var(--main-color);">✨ 이달의 잉여 자금 (수입-지출)</div>
+          <div style="font-size:26px; font-weight:700; color:var(--main-color); margin-top:10px;" id="jp_m_bal">₩0</div>
+          <div style="font-size:12px; color:var(--text-muted); margin-top:6px;">두 분이 이번 달에 남긴 순수 여윳돈입니다!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JP_TAB 1: 커플 통장 관리 (신규) -->
+  <div id="jp_tab1" class="tab-page">
+    <div id="capture_cp" style="display:flex; flex-direction:column; gap:16px; width:100%;">
       
-      <!-- 짠토 진행률 -->
-      <div style="margin-top:20px;">
-        <div style="display:flex; justify-content:space-between; font-size:14px;">
-          <span style="font-weight:700; color:#e8453c;">🍅 짠토 달성률</span>
-          <span id="jp_prog_z_txt" style="font-weight:700; color:#e8453c;">0%</span>
+      <div class="mb">
+        <h2>💳 커플 통장 관리</h2>
+        <select class="sc" id="cp_y" onchange="rCp()"></select>
+        <select class="sc" id="cp_m" onchange="rCp()"></select>
+        <button class="sav" onclick="saveForSNS('capture_cp', '커플통장')">📸 SNS 저장</button>
+      </div>
+
+      <!-- 1. 입금 현황판 -->
+      <div class="ws" style="background:var(--input-bg);">
+        <div class="wt" style="font-size:18px;">💰 이달의 입금 현황</div>
+        <div style="font-size:12px; color:var(--text-muted); margin-bottom:16px;">매달 정해진 데이트/생활비를 커플 통장에 넣고 체크하세요!</div>
+        
+        <div class="card-grid" style="margin-bottom:16px;">
+          <!-- 짠토 입금 카드 -->
+          <div style="background:#fff; border:2px solid #ffb3ba; border-radius:12px; padding:12px; display:flex; align-items:center; gap:12px;">
+            <div style="font-size:30px;">🍅</div>
+            <div style="flex:1;">
+              <div style="font-size:12px; font-weight:700; color:#e8453c; margin-bottom:4px;">짠토 입금액</div>
+              <input class="ti" id="cp_dep_z" style="padding:4px 8px; font-size:16px; font-weight:700; width:100%; border-color:#ffb3ba; color:#e8453c;" placeholder="금액 입력" oninput="fmtInp(this); updateCpDep();">
+            </div>
+            <div>
+              <label style="display:flex; flex-direction:column; align-items:center; cursor:pointer; font-size:11px; font-weight:700; color:#e8453c;">
+                <input type="checkbox" id="cp_done_z" style="width:20px; height:20px; margin-bottom:4px; accent-color:#e8453c;" onchange="updateCpDep()">
+                입금완료
+              </label>
+            </div>
+          </div>
+          <!-- 짠감 입금 카드 -->
+          <div style="background:#fff; border:2px solid #e6d5c3; border-radius:12px; padding:12px; display:flex; align-items:center; gap:12px;">
+            <div style="font-size:30px;">🥔</div>
+            <div style="flex:1;">
+              <div style="font-size:12px; font-weight:700; color:#a67c52; margin-bottom:4px;">짠감 입금액</div>
+              <input class="ti" id="cp_dep_j" style="padding:4px 8px; font-size:16px; font-weight:700; width:100%; border-color:#e6d5c3; color:#a67c52;" placeholder="금액 입력" oninput="fmtInp(this); updateCpDep();">
+            </div>
+            <div>
+              <label style="display:flex; flex-direction:column; align-items:center; cursor:pointer; font-size:11px; font-weight:700; color:#a67c52;">
+                <input type="checkbox" id="cp_done_j" style="width:20px; height:20px; margin-bottom:4px; accent-color:#a67c52;" onchange="updateCpDep()">
+                입금완료
+              </label>
+            </div>
+          </div>
         </div>
-        <div class="joint-prog-bg" style="height:18px; border-color:#fddcdc; background:#fff0f0;">
-          <div id="jp_prog_z_bar" class="joint-prog-bar" style="background:#e8453c;"></div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; background:var(--sub-bg); padding:16px; border-radius:12px; border:2px dashed var(--main-color);">
+          <div style="font-size:14px; font-weight:700; color:var(--text-dark);">현재 통장 실 잔액<br><span style="font-size:11px; color:var(--text-muted); font-weight:normal;">(총 입금 - 총 지출 - 정산완료)</span></div>
+          <div style="font-size:28px; font-weight:700; color:var(--main-color);" id="cp_total_bal">₩0</div>
         </div>
       </div>
 
-      <!-- 짠감 진행률 -->
-      <div style="margin-top:16px;">
-        <div style="display:flex; justify-content:space-between; font-size:14px;">
-          <span style="font-weight:700; color:#a67c52;">🥔 짠감 달성률</span>
-          <span id="jp_prog_j_txt" style="font-weight:700; color:#a67c52;">0%</span>
-        </div>
-        <div class="joint-prog-bg" style="height:18px; border-color:#e6d5c3; background:#f0e6d8;">
-          <div id="jp_prog_j_bar" class="joint-prog-bar" style="background:#a67c52;"></div>
-        </div>
-      </div>
-
-      <hr style="border:0; border-top:2px dashed var(--sub-color); margin: 24px 0;">
-
-      <!-- 공동 진행률 -->
-      <div style="font-size:26px; font-weight:700; color:var(--main-color); text-align:center;" id="jp_total_networth">현재 순자산 합계: ₩0</div>
-      
-      <div style="display:flex; justify-content:space-between; margin-top:20px; font-size:14px;">
-        <span style="font-weight:700; color:var(--text-muted);" id="jp_goal_name_disp">공동 목표 달성률</span>
-        <span id="jp_progress_txt" style="font-weight:700; color:var(--main-color); font-size:18px;">0%</span>
-      </div>
-      <div class="joint-prog-bg" style="height:32px; border-width: 3px;">
-        <div id="jp_progress_bar" class="joint-prog-bar"></div>
-      </div>
-    </div>
-
-    <div class="mb" style="margin-top:10px;">
-      <h2 style="font-size:20px; color:var(--main-color);">🗓️ 월별 합산 대시보드</h2>
-      <select class="sc" id="jp_y" onchange="rZzanpomatoDashboard()"></select>
-      <select class="sc" id="jp_m" onchange="rZzanpomatoDashboard()"></select>
-    </div>
-
-    <div class="card-grid">
-      <!-- 총 수입 -->
+      <!-- 2. 커플 가계부 (지출) -->
       <div class="ws">
-        <div class="wt">💚 이번 달 총 수입</div>
-        <div style="font-size:22px; font-weight:700; margin-bottom:12px; color:#2e7d32;" id="jp_m_inc">₩0</div>
-        <div style="font-size:14px; color:var(--text-muted); display:flex; justify-content:space-between;">
-          <span>🍅 짠토:</span> <span id="jp_m_inc_z" style="font-weight:700; color:#3a1a1a;">₩0</span>
+        <div class="stit">
+          <h3 style="font-size:16px; color:var(--text-dark);">🍽️ 데이트/공동 지출 내역</h3>
+          <div style="margin-left:auto; display:flex; gap:8px; align-items:center;">
+            <span style="font-size:12px; font-weight:700; color:var(--text-muted);">총 지출:</span>
+            <span class="pill" id="cp_ledger_tot" style="background:#ffe0e0; color:#e8453c;">₩0</span>
+          </div>
         </div>
-        <div style="font-size:14px; color:var(--text-muted); display:flex; justify-content:space-between; margin-top:4px;">
-          <span>🥔 짠감:</span> <span id="jp_m_inc_j" style="font-weight:700; color:#3e2723;">₩0</span>
-        </div>
-      </div>
-      <!-- 총 지출 -->
-      <div class="ws">
-        <div class="wt" style="color:#e8453c;">💸 이번 달 총 지출</div>
-        <div style="font-size:22px; font-weight:700; margin-bottom:12px; color:#e8453c;" id="jp_m_exp">₩0</div>
-        <div style="font-size:14px; color:var(--text-muted); display:flex; justify-content:space-between;">
-          <span>🍅 짠토:</span> <span id="jp_m_inc_z" style="font-weight:700; color:#3a1a1a;">₩0</span>
-        </div>
-        <div style="font-size:14px; color:var(--text-muted); display:flex; justify-content:space-between; margin-top:4px;">
-          <span>🥔 짠감:</span> <span id="jp_m_exp_j" style="font-weight:700; color:#3e2723;">₩0</span>
-        </div>
-      </div>
-      <!-- 총 저축/투자 -->
-      <div class="ws">
-        <div class="wt" style="color:#a67c52;">📈 이번 달 총 저축/투자</div>
-        <div style="font-size:22px; font-weight:700; margin-bottom:12px; color:#a67c52;" id="jp_m_inv">₩0</div>
-        <div style="font-size:14px; color:var(--text-muted); display:flex; justify-content:space-between;">
-          <span>🍅 짠토:</span> <span id="jp_m_inv_z" style="font-weight:700; color:#3a1a1a;">₩0</span>
-        </div>
-        <div style="font-size:14px; color:var(--text-muted); display:flex; justify-content:space-between; margin-top:4px;">
-          <span>🥔 짠감:</span> <span id="jp_m_inv_j" style="font-weight:700; color:#3e2723;">₩0</span>
+        <div class="dtw" style="overflow-x:auto;">
+          <table class="dt" style="min-width:500px;">
+            <thead><tr>
+              <th style="width:70px">날짜</th>
+              <th style="width:110px">분류</th>
+              <th>내용 (식당/장소)</th>
+              <th style="width:120px">금액 (원)</th>
+              <th style="width:44px">삭제</th>
+            </tr></thead>
+            <tbody id="cp_ledger_tb"></tbody>
+          </table>
+          <button class="arb" onclick="addCpLedger()">＋ 커플 지출 추가</button>
         </div>
       </div>
-      <!-- 이달의 잉여 자금 -->
-      <div class="ws" style="background:var(--sub-bg);">
-        <div class="wt" style="color:var(--main-color);">✨ 이달의 잉여 자금 (수입-지출)</div>
-        <div style="font-size:26px; font-weight:700; color:var(--main-color); margin-top:10px;" id="jp_m_bal">₩0</div>
-        <div style="font-size:12px; color:var(--text-muted); margin-top:6px;">두 분이 이번 달에 남긴 순수 여윳돈입니다!</div>
+
+      <!-- 3. 대리 결제 정산소 (더치페이) -->
+      <div class="ws" style="border-color:#baffc9; background:#fafffa;">
+        <div class="stit">
+          <h3 style="font-size:16px; color:#2e7d32;">💸 대리 결제 정산소</h3>
+          <div style="margin-left:auto; font-size:11px; color:#2e7d32; font-weight:700;">내 카드로 긁고 통장에서 빼가기!</div>
+        </div>
+        <div class="dtw" style="overflow-x:auto; border-color:#baffc9;">
+          <table class="dt" style="min-width:540px;">
+            <thead style="background:#e8f5e9;"><tr>
+              <th style="width:90px; color:#2e7d32;">결제자</th>
+              <th style="color:#2e7d32;">어디서 결제했나요?</th>
+              <th style="width:120px; color:#2e7d32;">금액 (원)</th>
+              <th style="width:90px; color:#2e7d32;">정산상태</th>
+              <th style="width:44px; color:#2e7d32;">삭제</th>
+            </tr></thead>
+            <tbody id="cp_dutch_tb"></tbody>
+          </table>
+          <button class="arb" style="border-top-color:#baffc9; background:#fff; color:#2e7d32;" onclick="addCpDutch()">＋ 대리 결제 내역 추가</button>
+        </div>
       </div>
+
     </div>
   </div>
 </div>
@@ -794,7 +903,7 @@ input.ti:focus{border-color:var(--main-color);}
   </div>
 </div>
 
-<!-- ★ 자산/부채 SNS 공유용 모달창 추가 -->
+<!-- ★ 자산/부채 SNS 공유용 모달창 -->
 <div class="mo" id="snsShareMo">
   <div class="mb2" style="max-width:480px;">
     <div class="mt2">📸 포트폴리오 공유용 캡처 (금액 숨김)</div>
@@ -859,11 +968,12 @@ if (urlParams.get('key')) {
 let appData = {
   zzanto:  { iD:{}, eD:{}, lgD:{}, nvD:{}, scD:{}, asD:{main:{details:[], cashDetails:[], liabilities:[], weeklyLogs:[]}}, iCats:[], eCats:[], nvCats:[] },
   jjangam: { iD:{}, eD:{}, lgD:{}, nvD:{}, scD:{}, asD:{main:{details:[], cashDetails:[], liabilities:[], weeklyLogs:[]}}, iCats:[], eCats:[], nvCats:[] },
-  joint:   { goalTitle: "신혼집 마련 🏠", goalAmount: "130000000", goalZzanto: "100000000", goalJjangam: "30000000" }
+  joint:   { goalTitle: "신혼집 마련 🏠", goalAmount: "130000000", goalZzanto: "100000000", goalJjangam: "30000000", cp:{}, cpCats:[] }
 };
 
 let activeProfile = 'zzanto'; 
 let currentTab = 0;
+let jpTab = 0; // 커플 대시보드 내부 서브탭
 let iD, eD, lgD, nvD, scD, asD, iCats, eCats, nvCats;
 
 const firebaseConfig = {
@@ -878,7 +988,6 @@ window.db = firebase.database();
 
 function ensureArr(val) {
   if (!val) return [];
-  // 버그 수정됨: 원시타입(문자열 등)이 들어와도 날아가지 않도록 typeof 필터링 해제
   if (Array.isArray(val)) return val.filter(v => v !== null); 
   if (typeof val === 'object') return Object.values(val).filter(v => v !== null);
   return [];
@@ -914,7 +1023,7 @@ const fmt = function(n) {
 };
 
 window.copySyncLink = function() {
-  alert("📌 커플 기기 연동 필독!\n\n이 링크를 잃어버리면 데이터를 복구할 수 없어요.\n링크를 복사해서 파트너의 카톡으로 전송하세요!");
+  alert("📌 커플 기기 연동 필독!\n\n이 링크를 잃어버리면 데이터를 복구할 수 없어요.\n링크 복사 후 파트너의 카톡으로 전송하세요!");
   const syncUrl = window.location.origin + window.location.pathname + '?key=' + mySyncKey;
   prompt("아래 링크를 복사하세요:", syncUrl);
 }
@@ -940,7 +1049,7 @@ function switchProfile(p) {
     
     document.getElementById('individual_view').style.display = 'none';
     document.getElementById('zzanpomato_view').style.display = 'flex';
-    rZzanpomatoDashboard();
+    swJp(jpTab); // 서브 탭 유지
     return;
   } 
 
@@ -953,15 +1062,15 @@ function switchProfile(p) {
     bZ.style.background="var(--main-color)"; bZ.style.color="#fff";
     document.getElementById('tab0_title').textContent = "🏠 짠토의 가계부 요약";
     document.getElementById('tab4_title').textContent = "💼 짠토의 자산 및 부채 현황";
-    btnScoop.style.display = 'inline-block'; // 짠토는 스쿱 보임
+    btnScoop.style.display = 'inline-block'; 
   } else {
     document.body.className = 'jjangam';
     bJ.classList.add('active');
     bJ.style.background="var(--main-color)"; bJ.style.color="#fff";
     document.getElementById('tab0_title').textContent = "🏠 짠감의 가계부 요약";
     document.getElementById('tab4_title').textContent = "💼 짠감의 자산 및 부채 현황";
-    btnScoop.style.display = 'none'; // 짠감은 스쿱 숨김
-    if(currentTab === 3) currentTab = 0; // 스쿱 탭에 있었다면 가계부로 이동
+    btnScoop.style.display = 'none'; 
+    if(currentTab === 3) currentTab = 0; 
   }
   
   iD = appData[p].iD; eD = appData[p].eD; lgD = appData[p].lgD; nvD = appData[p].nvD; asD = appData[p].asD; 
@@ -973,8 +1082,8 @@ function switchProfile(p) {
 
 function sw(i) {
   currentTab = i;
-  document.querySelectorAll(".tab-page").forEach((p,j) => p.classList.toggle("active",j===i));
-  document.querySelectorAll(".tab-btn").forEach((b,j) => b.classList.toggle("active",j===i));
+  document.querySelectorAll("#individual_view > .tab-page").forEach((p,j) => p.classList.toggle("active",j===i));
+  document.querySelectorAll("#tabbar > .tab-btn").forEach((b,j) => b.classList.toggle("active",j===i));
   
   if(i===0) rLedger();
   else if(i===1) rInc();
@@ -983,6 +1092,15 @@ function sw(i) {
   else if(i===4) rNVTotal(); 
   else if(i===5) rAs(); 
   else if(i===6) rReport(); 
+}
+
+function swJp(i) {
+  jpTab = i;
+  document.querySelectorAll("#zzanpomato_view > .tab-page").forEach((p,j) => p.classList.toggle("active",j===i));
+  document.querySelectorAll("#jp_tabbar > .tab-btn").forEach((b,j) => b.classList.toggle("active",j===i));
+  
+  if(i===0) rZzanpomatoDashboard();
+  else if(i===1) rCp();
 }
 
 /* ================= 데이터 세이브 함수 ================= */
@@ -997,8 +1115,8 @@ const sSc=()=>saveToFB("scD", scD);
 const sAs=()=>saveToFB("asD", asD);
 
 /* ================= 개인 탭 공통 로직 ================= */
-const _d = new Date(); const CUR_Y = 2026; const CUR_M = _d.getMonth()+1;
-let iY=CUR_Y,iM=CUR_M, eY=CUR_Y,eM=CUR_M, nvY=CUR_Y,nvM=CUR_M, scY=CUR_Y,scM=CUR_M, lgY=CUR_Y,lgM=CUR_M, rY=CUR_Y, jpY=CUR_Y, jpM=CUR_M;
+const _d = new Date(); const CUR_Y = 2026; const CUR_M = 8; // 지정된 26년 8월 기준
+let iY=CUR_Y,iM=CUR_M, eY=CUR_Y,eM=CUR_M, nvY=CUR_Y,nvM=CUR_M, scY=CUR_Y,scM=CUR_M, lgY=CUR_Y,lgM=CUR_M, rY=CUR_Y, jpY=CUR_Y, jpM=CUR_M, cpY=CUR_Y, cpM=CUR_M;
 let iFil_state="전체", eFil_state="전체";
 let scWk=0, scRat="1/1"; 
 
@@ -1017,6 +1135,17 @@ function checkDefaults() {
   asD.main.cashDetails = ensureArr(asD.main.cashDetails);
   asD.main.liabilities = ensureArr(asD.main.liabilities);
   if(!asD.main.weeklyLogs || !Array.isArray(asD.main.weeklyLogs)) asD.main.weeklyLogs = [];
+
+  // 공동 통장 기본 세팅
+  if(!appData.joint.cpCats || appData.joint.cpCats.length===0) {
+      appData.joint.cpCats = [
+          {name:"🍽️ 식비", color:"#ffb3ba"},
+          {name:"🎬 데이트", color:"#bae1ff"},
+          {name:"🚗 교통", color:"#ffffba"},
+          {name:"✈️ 여행", color:"#baffc9"},
+          {name:"기타", color:"#e6e6fa"}
+      ];
+  }
 }
 
 function gLgData(y,m){ if(!lgD[y])lgD[y]={}; if(!lgD[y][m])lgD[y][m]={salary:"",memos:{}}; return lgD[y][m]; }
@@ -1024,11 +1153,10 @@ function gID(y,m){
   if(!iD[y])iD[y]={}; 
   if(!iD[y][m]){
     let initData = {fixed:[], dated:[]};
-    // 이전 달 데이터 깊은 복사 이월 로직
     let pM = m - 1; let pY = y;
     if (pM === 0) { pM = 12; pY = y - 1; }
     if (iD[pY] && iD[pY][pM] && iD[pY][pM].fixed && iD[pY][pM].fixed.length > 0) {
-      initData.fixed = JSON.parse(JSON.stringify(iD[pY][pM].fixed)); // 깊은 복사
+      initData.fixed = JSON.parse(JSON.stringify(iD[pY][pM].fixed)); 
     }
     iD[y][m] = initData; 
     sI();
@@ -1039,11 +1167,10 @@ function gED(y,m){
   if(!eD[y])eD[y]={}; 
   if(!eD[y][m]){
     let initData = {fixed:[], dated:[]};
-    // 이전 달 데이터 깊은 복사 이월 로직
     let pM = m - 1; let pY = y;
     if (pM === 0) { pM = 12; pY = y - 1; }
     if (eD[pY] && eD[pY][pM] && eD[pY][pM].fixed && eD[pY][pM].fixed.length > 0) {
-      initData.fixed = JSON.parse(JSON.stringify(eD[pY][pM].fixed)); // 깊은 복사
+      initData.fixed = JSON.parse(JSON.stringify(eD[pY][pM].fixed)); 
     }
     eD[y][m] = initData;
     sE();
@@ -1061,6 +1188,25 @@ function gAsD(){
   if(!d.weeklyLogs || !Array.isArray(d.weeklyLogs)) d.weeklyLogs = [];
   return d; 
 }
+
+// 커플통장 데이터 getter
+function gCpD(y,m){
+  if(!appData.joint.cp) appData.joint.cp = {};
+  if(!appData.joint.cp[y]) appData.joint.cp[y] = {};
+  if(!appData.joint.cp[y][m]) {
+      appData.joint.cp[y][m] = {
+          depZ: "", depJ: "", doneZ: false, doneJ: false,
+          ledger: [], dutch: []
+      };
+  }
+  appData.joint.cp[y][m].ledger = ensureArr(appData.joint.cp[y][m].ledger);
+  appData.joint.cp[y][m].dutch = ensureArr(appData.joint.cp[y][m].dutch);
+  return appData.joint.cp[y][m];
+}
+function sCpD() {
+  if(isFirebaseLoaded) db.ref("users/" + mySyncKey + "/joint").set(appData.joint);
+}
+
 
 function bPal(tp){
   const row=document.getElementById(tp+"pal");if(!row)return;row.innerHTML="";
@@ -1116,7 +1262,6 @@ function drawDonut(cid,items,vid,lid){
   ctx.beginPath();ctx.arc(cx,cy,r-10,0,2*Math.PI);ctx.fillStyle="#fff";ctx.fill();
 }
 
-/* ★ 새로 추가된 SNS 공유용 차트 그리기 (금액은 숨기고 퍼센트만 표시) */
 function drawDonutShare(cid, items, lid) {
     const canvas = document.getElementById(cid); if(!canvas) return;
     const ctx = canvas.getContext("2d"); const w = canvas.width, h = canvas.height, r = Math.min(w,h)/2-8, cx = w/2, cy = h/2;
@@ -1161,6 +1306,7 @@ function buildYM(yid,mid,cy,cm){
 }
 
 /* ================= 0: 가계부 탭 ================= */
+// ... (0, 1, 2, 3, 4, 5, 6 탭 로직은 원본 그대로 유지) ...
 function updateLgSalary(v){gLgData(lgY,lgM).salary=v;sLg();rLedger();}
 function updateLgMemo(k,v){gLgData(lgY,lgM).memos=gLgData(lgY,lgM).memos||{};gLgData(lgY,lgM).memos[k]=v;sLg();}
 function updateLgGoal(el){
@@ -1182,14 +1328,12 @@ function rLedger(){
   const eT=ed.fixed.concat(ed.dated).filter(r=>!r.exclude).reduce((s,r)=>s+(+r.amount||0),0);
   const nT=+(nd.manualTotal)||0; const sal=+ld.salary||0;
 
-  // 목표 예산 세팅
   const goalVal = ld.goal !== undefined ? ld.goal : 500000;
   if (document.activeElement !== document.getElementById("lggoal")) {
       document.getElementById("lggoal").value = fmtStr(goalVal);
   }
   const goal = +String(goalVal).replace(/[^0-9]/g,'')||0;
   
-  // 소비 약속 세팅
   if (document.activeElement !== document.getElementById("lgpromise")) {
       document.getElementById("lgpromise").value = ld.promise || "";
   }
@@ -1229,7 +1373,6 @@ function rLedger(){
   });
 }
 
-/* ================= 1: 부수입 / 2: 지출 ================= */
 function imc(){iY=parseInt(document.getElementById("iy").value)||CUR_Y;iM=parseInt(document.getElementById("im").value)||CUR_M;rInc();}
 function emc(){eY=parseInt(document.getElementById("ey").value)||CUR_Y;eM=parseInt(document.getElementById("em").value)||CUR_M;rExp();}
 function sortDated(tp){let d=tp==='i'?gID(iY,iM):gED(eY,eM); d.dated.sort((a,b)=>(parseInt(a.date.replace(/[^0-9]/g,''))||0)-(parseInt(b.date.replace(/[^0-9]/g,''))||0)); if(tp==='i'){sI();rInc();}else{sE();rExp();}}
@@ -1308,7 +1451,7 @@ function rExp(){
 window.aEF=()=>{gED(eY,eM).fixed.push({cat:eCats[0]?eCats[0].name:"",desc:"",amount:"",over:"",exclude:false});sE();rExp();};
 window.aED=()=>{gED(eY,eM).dated.push({date:"",cat:eCats[0]?eCats[0].name:"",desc:"",amount:"",over:"",exclude:false});sE();rExp();};
 
-/* ================= 3: 랜덤스쿱 ================= */
+// 랜덤스쿱
 const SC_RULES_DEF=()=>[["🍅 달성률 10%당 1스쿱🥄"],["🍅 네잎클로버 파츠는 한 번 더!🍀"],["🍅 100% 달성시 한 번 더! ✨"],["🍅 큰 파츠 개당 1,000원💎"],["🍅 주간 총 금액 다음 주에 매수! 💸"]];
 function gScRules(y,m){
   if(!scD[y])scD[y]={}; if(!scD[y][m])scD[y][m]={};
@@ -1322,7 +1465,6 @@ function gScWk(y,m,wk){
   if(scD[y][m]["w"+wk].rows.length===0) scD[y][m]["w"+wk].rows=SC_WK_DEF(wk).rows;
   return scD[y][m]["w"+wk];
 }
-
 function onSP(){scY=parseInt(document.getElementById("scy").value)||CUR_Y;scM=parseInt(document.getElementById("scm").value)||CUR_M;bRT();bSWUI();}
 function bRT(){
   const r=gScRules(scY,scM); const tbl=document.getElementById("rtbl");tbl.innerHTML="";
@@ -1345,21 +1487,16 @@ function bSWUI(){
     hd.innerHTML=`<h3>${wk}주차</h3><input class="wdate-inp" value="${wd.dateRange||""}" placeholder="예: 8/1~8/7" oninput="updateScDate(${wk},this.value)"><div class="wtotal-badge" id="sctot${wk}">₩${fmt(wd.weekTotal)}</div>`;
     card.appendChild(hd);
     const tbl=document.createElement("table");tbl.className="dt";tbl.style.minWidth="520px";
-    
-    // 월~금만 보이게 수정
     const days=["월","화","수","목","금"];
     const thead=document.createElement("thead");
     thead.innerHTML="<tr><th style='width:100px;text-align:center;'>항목</th>"+days.map(d=>`<th style="text-align:center;">${d}</th>`).join("")+"</tr>";
     tbl.appendChild(thead);
-    
     const tbody=document.createElement("tbody");
     wd.rows.forEach((row,ri)=>{
       const tr=document.createElement("tr");
       let cells=`<td style="font-weight:700;color:var(--text-muted);font-size:12px;text-align:center;">${row.label}</td>`;
       row.vals.forEach((v,vi)=>{
         if (vi < 5) {
-            // ri === 5 (총 금액) 행일 경우에만 금액 포맷팅(fmtInp) 강제 적용, 
-            // 나머지는 텍스트(예: O, X, 달성률 텍스트 등)를 자유롭게 입력하도록 허용
             if (ri === 5) {
                 cells+=`<td><input class="lt-inp" value="${fmtStr(v)}" oninput="updateScVal(${wk},${ri},${vi},fmtInp(this))" style="text-align:center;font-size:13px;padding:4px 0;"></td>`;
             } else {
@@ -1371,7 +1508,7 @@ function bSWUI(){
     });
     tbl.appendChild(tbody);
     const wrap2=document.createElement("div");wrap2.style.overflowX="auto";wrap2.appendChild(tbl);
-    card.appendChild(wrap2); // ★ 누락되었던 부분 수정 완료! 화면에 테이블을 붙여줍니다.
+    card.appendChild(wrap2); 
     const totRow=document.createElement("div");totRow.style.cssText="display:flex;align-items:center;gap:10px;margin-top:10px;padding-top:8px;border-top:1px dashed var(--sub-color);";
     totRow.innerHTML=`<span style="font-size:13px;font-weight:700;color:var(--text-muted);">주간 총금액</span><input class="ti" id="sc_tot_inp_${wk}" value="${fmtStr(wd.weekTotal)}" placeholder="총 금액 입력" oninput="updateScWeekTotal(${wk},fmtInp(this))" style="max-width:160px;text-align:right;">`;
     card.appendChild(totRow); wrap.appendChild(card);
@@ -1395,13 +1532,11 @@ window.updateScWeekTotal=(wk,val)=>{
   document.getElementById("scpill").textContent="월 총 ₩"+fmt(totalAll);
 };
 
-/* ================= 4: 저축/투자 (포커스 유지 + 자동합계) ================= */
+// 투자
 function onNP(){nvY=parseInt(document.getElementById("nvy").value)||CUR_Y;nvM=parseInt(document.getElementById("nvm").value)||CUR_M;rNVTotal();}
-
 window.calcNvAutoSum = () => {
   const d = gNvD(nvY, nvM);
   let sum = 0;
-  // rows 배열 돌면서 계산 (과거 배열도 그대로 지원)
   ensureArr(d.rows).forEach(r => { if(!r.exclude) sum += (parseInt(String(r.pr).replace(/[^0-9]/g, '')) || 0); });
   d.manualTotal = String(sum);
   sNv(); 
@@ -1411,10 +1546,8 @@ window.calcNvAutoSum = () => {
   const t = document.getElementById("nvtotal"); if(t) t.textContent="₩"+fmt(sum);
   rLedger(); 
 };
-
 function rNVTotal(){
   checkDefaults(); bPal("nv"); bChips("nv"); const d=gNvD(nvY,nvM);
-  
   let autoSum = 0;
   ensureArr(d.rows).forEach(r => { if(!r.exclude) autoSum += (parseInt(String(r.pr).replace(/[^0-9]/g, '')) || 0); });
   d.manualTotal = String(autoSum); sNv();
@@ -1456,7 +1589,7 @@ function rNVTotal(){
   });
 }
 
-/* ================= 5: 자산 & 부채 ================= */
+// 자산부채
 window.updateAsTotals = () => {
   const d = gAsD();
   let assets = 0, liabs = 0;
@@ -1486,7 +1619,6 @@ window.updateAsTotals = () => {
   drawDonut("asdc2", Object.keys(invAgg).map(k=>({name:k,amount:invAgg[k],color:cc(d.nsaCats,k)})), "asdv2", "asl2");
 };
 
-// ★ 자산 탭 SNS 공유용 모달창 열기
 window.openSnsShareModal = () => {
     const d = gAsD();
     let assets = 0;
@@ -1509,13 +1641,9 @@ window.openSnsShareModal = () => {
     const mo = document.getElementById("snsShareMo");
     mo.classList.add("open");
 
-    // 1. 총자산 비율 도넛 그리기 (금액 표시 없이 퍼센트만)
     drawDonutShare("sns_dc1", Object.keys(typeAgg).map(k=>({name:k,amount:typeAgg[k],color:cc(d.typeCats,k)})), "sns_l1");
-
-    // 2. 주식/투자 비율 도넛 그리기 (금액 표시 없이 퍼센트만)
     drawDonutShare("sns_dc2", Object.keys(invAgg).map(k=>({name:k,amount:invAgg[k],color:cc(d.nsaCats,k)})), "sns_l2");
 
-    // 3. 주차별 변동 기록 그리기 (날짜 + 변동내역만)
     const wkT = document.getElementById("sns_wk_tb");
     wkT.innerHTML = "";
     if(d.weeklyLogs.length === 0) {
@@ -1538,7 +1666,6 @@ window.openSnsShareModal = () => {
     }
 };
 
-// ★ 자산 탭 SNS 공유용 이미지 저장 로직
 window.downloadSnsShare = function(){
     const mb2 = document.querySelector("#snsShareMo .mb2"); 
     const oldMax = mb2.style.maxHeight; const oldOver = mb2.style.overflowY;
@@ -1554,7 +1681,6 @@ window.downloadSnsShare = function(){
     }); }, 100);
 };
 
-// 스냅샷 저장 함수
 window.saveAsSnapshot = () => {
   const d = gAsD();
   let assets = 0, liabs = 0;
@@ -1580,7 +1706,6 @@ function rAs(){
     arr.forEach((c,i)=>{ w.innerHTML+=`<div class="chip" style="background:${c.color}">${c.name}<span class="xd" onclick="gAsD().${tp==='type'?'typeCats':tp==='nsa'?'nsaCats':tp==='mid'?'midCats':'subs'}.splice(${i},1);sAs();rAs();">✕</span></div>`; });
   });
   
-  // 주차별 자산 변동 스냅샷 테이블
   const wkT = document.getElementById("aswk_tb"); wkT.innerHTML = "";
   d.weeklyLogs.forEach((log, i) => {
     let diffStr = "-";
@@ -1740,6 +1865,107 @@ window.rZzanpomatoDashboard = function() {
 };
 
 
+/* ================= 🍅🥔 커플 통장 탭 로직 ================= */
+window.updateCpDep = function() {
+    const d = gCpD(cpY, cpM);
+    d.depZ = document.getElementById("cp_dep_z").value.replace(/[^0-9]/g, '');
+    d.depJ = document.getElementById("cp_dep_j").value.replace(/[^0-9]/g, '');
+    d.doneZ = document.getElementById("cp_done_z").checked;
+    d.doneJ = document.getElementById("cp_done_j").checked;
+    sCpD();
+    calcCpBal();
+};
+
+window.addCpLedger = function() {
+    const d = gCpD(cpY, cpM);
+    const defCat = appData.joint.cpCats.length > 0 ? appData.joint.cpCats[0].name : "";
+    d.ledger.push({ date: "", cat: defCat, desc: "", amount: "" });
+    sCpD();
+    rCp();
+};
+
+window.addCpDutch = function() {
+    const d = gCpD(cpY, cpM);
+    d.dutch.push({ who: "짠토", desc: "", amount: "", settled: false });
+    sCpD();
+    rCp();
+};
+
+function calcCpBal() {
+    const d = gCpD(cpY, cpM);
+    
+    // 입금 계산 (완료 체크된 것만)
+    let zIn = d.doneZ ? (+d.depZ||0) : 0;
+    let jIn = d.doneJ ? (+d.depJ||0) : 0;
+    let totalIn = zIn + jIn;
+
+    // 지출 계산
+    let totalExp = 0;
+    d.ledger.forEach(r => totalExp += (+r.amount||0));
+    
+    // 정산 완료된 더치페이 계산 (통장에서 빠져나간 돈)
+    let totalSettled = 0;
+    d.dutch.forEach(r => {
+        if(r.settled) totalSettled += (+r.amount||0);
+    });
+
+    let currentBal = totalIn - totalExp - totalSettled;
+    
+    document.getElementById("cp_total_bal").textContent = "₩" + fmt(currentBal);
+    document.getElementById("cp_ledger_tot").textContent = "₩" + fmt(totalExp);
+}
+
+window.rCp = function() {
+    cpY = parseInt(document.getElementById("cp_y").value) || CUR_Y; 
+    cpM = parseInt(document.getElementById("cp_m").value) || CUR_M;
+    checkDefaults();
+    const d = gCpD(cpY, cpM);
+
+    // 입금 영역 바인딩
+    document.getElementById("cp_dep_z").value = fmtStr(d.depZ);
+    document.getElementById("cp_dep_j").value = fmtStr(d.depJ);
+    document.getElementById("cp_done_z").checked = d.doneZ || false;
+    document.getElementById("cp_done_j").checked = d.doneJ || false;
+
+    // 커플 가계부 테이블 바인딩
+    const lT = document.getElementById("cp_ledger_tb");
+    lT.innerHTML = "";
+    d.ledger.forEach((r, i) => {
+        lT.innerHTML += `<tr>
+            <td><input value="${r.date||""}" placeholder="일" style="width:100%; text-align:center; font-family:'Poor Story',cursive; font-size:13px; border:none; outline:none; background:transparent;" oninput="gCpD(${cpY},${cpM}).ledger[${i}].date=this.value; sCpD();"></td>
+            <td><select style="background:${cc(appData.joint.cpCats,r.cat)}; border-radius:6px; border:none; outline:none; padding:3px; width:100%; font-weight:700; font-family:'Poor Story',cursive;" onchange="gCpD(${cpY},${cpM}).ledger[${i}].cat=this.value; sCpD(); rCp();">${getCatOptionsHtml(appData.joint.cpCats,r.cat)}</select></td>
+            <td><input value="${r.desc||""}" style="width:100%; font-family:'Poor Story',cursive; font-size:13px; border:none; outline:none; background:transparent;" oninput="gCpD(${cpY},${cpM}).ledger[${i}].desc=this.value; sCpD();"></td>
+            <td><input value="${fmtStr(r.amount)}" style="width:100%; text-align:right; font-family:'Poor Story',cursive; font-size:13px; border:none; outline:none; background:transparent;" oninput="gCpD(${cpY},${cpM}).ledger[${i}].amount=fmtInp(this); sCpD(); calcCpBal();"></td>
+            <td style="text-align:center;"><button class="bsm" onclick="gCpD(${cpY},${cpM}).ledger.splice(${i},1); sCpD(); rCp();">✕</button></td>
+        </tr>`;
+    });
+
+    // 대리 결제(더치페이) 테이블 바인딩
+    const dT = document.getElementById("cp_dutch_tb");
+    dT.innerHTML = "";
+    d.dutch.forEach((r, i) => {
+        let isSettled = r.settled || false;
+        let opac = isSettled ? "0.5" : "1";
+        dT.innerHTML += `<tr style="opacity:${opac};">
+            <td><select style="width:100%; font-family:'Poor Story',cursive; font-size:13px; font-weight:700; border:none; outline:none; background:transparent; color:${r.who==='짠토'?'#e8453c':'#a67c52'};" onchange="gCpD(${cpY},${cpM}).dutch[${i}].who=this.value; sCpD(); rCp();">
+                <option value="짠토" ${r.who==='짠토'?'selected':''}>🍅 짠토</option>
+                <option value="짠감" ${r.who==='짠감'?'selected':''}>🥔 짠감</option>
+            </select></td>
+            <td><input value="${r.desc||""}" placeholder="결제 내용" style="width:100%; font-family:'Poor Story',cursive; font-size:13px; border:none; outline:none; background:transparent;" oninput="gCpD(${cpY},${cpM}).dutch[${i}].desc=this.value; sCpD();"></td>
+            <td><input value="${fmtStr(r.amount)}" style="width:100%; text-align:right; font-weight:700; font-family:'Poor Story',cursive; font-size:13px; border:none; outline:none; background:transparent; color:${r.who==='짠토'?'#e8453c':'#a67c52'};" oninput="gCpD(${cpY},${cpM}).dutch[${i}].amount=fmtInp(this); sCpD(); calcCpBal();"></td>
+            <td style="text-align:center;">
+                <label style="font-size:11px; font-weight:700; color:#2e7d32; cursor:pointer;">
+                    <input type="checkbox" ${isSettled?'checked':''} onchange="gCpD(${cpY},${cpM}).dutch[${i}].settled=this.checked; sCpD(); rCp();" style="accent-color:#2e7d32;"> 정산완료
+                </label>
+            </td>
+            <td style="text-align:center;"><button class="bsm" style="background:#fff; color:#2e7d32; border-color:#2e7d32;" onclick="gCpD(${cpY},${cpM}).dutch.splice(${i},1); sCpD(); rCp();">✕</button></td>
+        </tr>`;
+    });
+
+    calcCpBal();
+};
+
+
 /* ================= 6: 개인 리포트 ================= */
 let rChartInst1 = null; let rChartInst2 = null;
 function rReport() {
@@ -1778,7 +2004,6 @@ function bScCard(){
     let totalAll=0;let rows="";
     for(let wk=1;wk<=4;wk++){
       const wd=gScWk(scY,scM,wk); 
-      // 숫자 제외한 문자 모두 제거해서 금액 합산 보장
       const wtStr = String(wd.weekTotal).replace(/[^0-9]/g, '');
       const wt = parseInt(wtStr) || 0; 
       totalAll+=wt;
@@ -1812,7 +2037,6 @@ function bScCard(){
       (row.vals || []).forEach((v,i)=>{ 
         if(i<5) {
             let disp = v || "";
-            // 리스트에서 5번째 항목(총 금액)일 때만 포맷 적용
             if(disp !== "" && ri === 5) {
                 disp = "₩" + fmt(v);
             }
@@ -1850,20 +2074,17 @@ window.saveForSNS = function(targetId, fileName) {
   const target = document.getElementById(targetId);
   if(!target) return;
   
-  // 임시로 숨길 UI 버튼들 (캡처화면에서 안 보이게)
-  const hideEls = target.querySelectorAll('.sav, .bsm, .arb, .cac, .xd, #cat_mgmt, .car, select.sc');
+  const hideEls = target.querySelectorAll('.sav, .bsm, .arb, .cac, .xd, #cat_mgmt, .car, select.sc, input[type="checkbox"]');
   const originalDisplays = [];
   hideEls.forEach(el => {
     originalDisplays.push(el.style.display);
     el.style.display = 'none';
   });
 
-  // 스타일 임시 저장
   const origBg = target.style.background;
   const origPadding = target.style.padding;
   const origRadius = target.style.borderRadius;
   
-  // 현재 테마의 배경색(body 배경색) 가져와서 씌우기 (글자 잘 보이게)
   const computedBg = getComputedStyle(document.body).backgroundColor;
   target.style.background = computedBg;
   target.style.padding = "24px";
@@ -1881,7 +2102,6 @@ window.saveForSNS = function(targetId, fileName) {
       a.href = canvas.toDataURL("image/png");
       a.click();
 
-      // 원래 상태로 복구
       target.style.background = origBg;
       target.style.padding = origPadding;
       target.style.borderRadius = origRadius;
@@ -1889,12 +2109,12 @@ window.saveForSNS = function(targetId, fileName) {
         el.style.display = originalDisplays[idx];
       });
     });
-  }, 150); // DOM 업데이트가 끝날 때까지 0.15초 대기
+  }, 150); 
 };
 
 /* ================= 초기화 ================= */
 (function init(){
-  buildYM("lgy","lgm",lgY,lgM); buildYM("iy","im",iY,iM); buildYM("ey","em",eY,eM); buildYM("nvy","nvm",nvY,nvM); buildYM("scy","scm",scY,scM); buildYM("jp_y","jp_m",jpY,jpM);
+  buildYM("lgy","lgm",lgY,lgM); buildYM("iy","im",iY,iM); buildYM("ey","em",eY,eM); buildYM("nvy","nvm",nvY,nvM); buildYM("scy","scm",scY,scM); buildYM("jp_y","jp_m",jpY,jpM); buildYM("cp_y","cp_m",cpY,cpM);
   const rys = document.getElementById("ry");
   if(rys){ for(let y=CUR_Y;y<=CUR_Y+4;y++){ const o=document.createElement("option"); o.value=y; o.textContent=y+"년"; if(y===rY)o.selected=true; rys.appendChild(o); } }
 })();
