@@ -219,7 +219,7 @@ input.ti:focus{border-color:var(--main-color);}
   </div>
   <div class="header-title-row">
     <span style="font-size:28px;">🍅🥔</span>
-    <h1>짠포마토의 기록 <span class="ver">v1.6</span></h1>
+    <h1>짠포마토의 기록 <span class="ver">v1.7</span></h1>
   </div>
   <div class="profile-switcher">
     <button id="prof_zzanto" class="prof-btn active" onclick="switchProfile('zzanto')">🍅 짠토</button>
@@ -244,8 +244,7 @@ input.ti:focus{border-color:var(--main-color);}
   <!-- 0: 가계부 탭 -->
   <div class="tab-page active" id="tp0">
   <div class="ft">
-    
-    <!-- 캡처 영역 시작 (딱 요약본만!) -->
+    <!-- 캡처 영역 시작 -->
     <div id="capture_t0" style="display:flex; flex-direction:column; gap:16px; width:100%;">
       <div class="mb">
         <h2 id="tab0_title">🏠 가계부 요약</h2>
@@ -777,7 +776,7 @@ input.ti:focus{border-color:var(--main-color);}
     </div>
   </div>
 
-  <!-- JP_TAB 1: 커플 통장 관리 (신규) -->
+  <!-- JP_TAB 1: 커플 통장 관리 -->
   <div id="jp_tab1" class="tab-page">
     <div id="capture_cp" style="display:flex; flex-direction:column; gap:16px; width:100%;">
       
@@ -788,10 +787,10 @@ input.ti:focus{border-color:var(--main-color);}
         <button class="sav" onclick="saveForSNS('capture_cp', '커플통장')">📸 SNS 저장</button>
       </div>
 
-      <!-- 1. 입금 현황판 -->
+      <!-- 1. 입금 및 이월 현황판 -->
       <div class="ws" style="background:var(--input-bg);">
-        <div class="wt" style="font-size:18px;">💰 이달의 입금 현황</div>
-        <div style="font-size:12px; color:var(--text-muted); margin-bottom:16px;">매달 정해진 데이트/생활비를 커플 통장에 넣고 체크하세요!</div>
+        <div class="wt" style="font-size:18px;">💰 이달의 입금 및 보유 현황</div>
+        <div style="font-size:12px; color:var(--text-muted); margin-bottom:16px;">매달 약속한 금액과 이미 보유한 잔액을 확인하세요!</div>
         
         <div class="card-grid" style="margin-bottom:16px;">
           <!-- 짠토 입금 카드 -->
@@ -824,16 +823,36 @@ input.ti:focus{border-color:var(--main-color);}
           </div>
         </div>
 
+        <!-- ★ 이월 및 보유 잔액 입력 (신규) -->
+        <div style="background:#fff; border:2px solid var(--sub-color); border-radius:12px; padding:12px; display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+          <div style="font-size:30px;">🏦</div>
+          <div style="flex:1;">
+            <div style="font-size:12px; font-weight:700; color:var(--text-muted); margin-bottom:4px;">이월 및 기존 보유 잔액</div>
+            <input class="ti" id="cp_carry_over" style="padding:4px 8px; font-size:16px; font-weight:700; width:100%; color:var(--text-dark);" placeholder="기존에 모아둔 금액이나 지난달 남은 금액 입력" oninput="fmtInp(this); updateCpDep();">
+          </div>
+        </div>
+
         <div style="display:flex; justify-content:space-between; align-items:center; background:var(--sub-bg); padding:16px; border-radius:12px; border:2px dashed var(--main-color);">
-          <div style="font-size:14px; font-weight:700; color:var(--text-dark);">현재 통장 실 잔액<br><span style="font-size:11px; color:var(--text-muted); font-weight:normal;">(총 입금 - 총 지출 - 정산완료)</span></div>
+          <div style="font-size:14px; font-weight:700; color:var(--text-dark);">현재 통장 실 잔액<br><span style="font-size:11px; color:var(--text-muted); font-weight:normal;">(보유잔액 + 총 입금 - 지출 - 정산완료)</span></div>
           <div style="font-size:28px; font-weight:700; color:var(--main-color);" id="cp_total_bal">₩0</div>
+        </div>
+      </div>
+
+      <!-- ★ 커플 통장 분류 관리 (신규) -->
+      <div class="cm" id="cp_cat_mgmt">
+        <h3>🏷 커플 통장 분류 관리 <span style="font-size:11px;color:var(--text-muted);">(최대 20개)</span></h3>
+        <div class="cw" id="cp_chips"></div>
+        <div class="car">
+          <div><div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">색상</div><div class="pr" id="cppal"></div></div>
+          <div><div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">분류명</div><input class="cni" id="cpcni" placeholder="예: 🎁 기념일" maxlength="10"></div>
+          <button class="cac" onclick="addCpCat()">＋ 추가</button>
         </div>
       </div>
 
       <!-- 2. 커플 가계부 (지출) -->
       <div class="ws">
         <div class="stit">
-          <h3 style="font-size:16px; color:var(--text-dark);">🍽️ 데이트/공동 지출 내역</h3>
+          <h3 style="font-size:16px; color:var(--text-dark);">🍽️ 공동 지출 내역</h3>
           <div style="margin-left:auto; display:flex; gap:8px; align-items:center;">
             <span style="font-size:12px; font-weight:700; color:var(--text-muted);">총 지출:</span>
             <span class="pill" id="cp_ledger_tot" style="background:#ffe0e0; color:#e8453c;">₩0</span>
@@ -872,6 +891,26 @@ input.ti:focus{border-color:var(--main-color);}
             <tbody id="cp_dutch_tb"></tbody>
           </table>
           <button class="arb" style="border-top-color:#baffc9; background:#fff; color:#2e7d32;" onclick="addCpDutch()">＋ 대리 결제 내역 추가</button>
+        </div>
+      </div>
+
+      <!-- ★ 4. 공동 할부/부채 관리 (신규) -->
+      <div class="ws" style="border-color:#ffb3ba; background:#fff9f9;">
+        <div class="stit">
+          <h3 style="font-size:16px; color:#e8453c;">💳 공동 할부 / 부채 관리</h3>
+          <div style="margin-left:auto; font-size:11px; color:#e8453c; font-weight:700;">같이 갚아야 할 큰 돈 (예: 노트북 12개월)</div>
+        </div>
+        <div class="dtw" style="overflow-x:auto; border-color:#ffb3ba;">
+          <table class="dt" style="min-width:540px;">
+            <thead style="background:#fff0f0;"><tr>
+              <th style="color:#e8453c;">항목 (내용 및 할부 개월수)</th>
+              <th style="width:120px; color:#e8453c;">총 결제 금액</th>
+              <th style="width:120px; color:#e8453c;">남은 금액</th>
+              <th style="width:44px; color:#e8453c;">삭제</th>
+            </tr></thead>
+            <tbody id="cp_liab_tb"></tbody>
+          </table>
+          <button class="arb" style="border-top-color:#ffb3ba; background:#fff; color:#e8453c;" onclick="addCpLiab()">＋ 공동 부채 내역 추가</button>
         </div>
       </div>
 
@@ -968,7 +1007,7 @@ if (urlParams.get('key')) {
 let appData = {
   zzanto:  { iD:{}, eD:{}, lgD:{}, nvD:{}, scD:{}, asD:{main:{details:[], cashDetails:[], liabilities:[], weeklyLogs:[]}}, iCats:[], eCats:[], nvCats:[] },
   jjangam: { iD:{}, eD:{}, lgD:{}, nvD:{}, scD:{}, asD:{main:{details:[], cashDetails:[], liabilities:[], weeklyLogs:[]}}, iCats:[], eCats:[], nvCats:[] },
-  joint:   { goalTitle: "신혼집 마련 🏠", goalAmount: "130000000", goalZzanto: "100000000", goalJjangam: "30000000", cp:{}, cpCats:[] }
+  joint:   { goalTitle: "신혼집 마련 🏠", goalAmount: "130000000", goalZzanto: "100000000", goalJjangam: "30000000", cp:{}, cpCats:[], cpLiabs:[] }
 };
 
 let activeProfile = 'zzanto'; 
@@ -1115,13 +1154,13 @@ const sSc=()=>saveToFB("scD", scD);
 const sAs=()=>saveToFB("asD", asD);
 
 /* ================= 개인 탭 공통 로직 ================= */
-const _d = new Date(); const CUR_Y = 2026; const CUR_M = 8; // 지정된 26년 8월 기준
+const _d = new Date(); const CUR_Y = 2026; const CUR_M = 8;
 let iY=CUR_Y,iM=CUR_M, eY=CUR_Y,eM=CUR_M, nvY=CUR_Y,nvM=CUR_M, scY=CUR_Y,scM=CUR_M, lgY=CUR_Y,lgM=CUR_M, rY=CUR_Y, jpY=CUR_Y, jpM=CUR_M, cpY=CUR_Y, cpM=CUR_M;
 let iFil_state="전체", eFil_state="전체";
 let scWk=0, scRat="1/1"; 
 
 const PAL=["#ffb3ba","#ffdfba","#ffffba","#baffc9","#bae1ff","#f4a7b9","#c9b1d9","#a8d8ea","#f9d5a7","#b5ead7","#ffdac1","#e2f0cb","#b5d5c5","#d4a5a5","#c7ceea","#fcdfff","#d0f0c0","#ffc0cb","#e6e6fa","#fffacd"];
-let selP={i:PAL[0], e:PAL[0], nv:PAL[0], type:PAL[0], nsa:PAL[0], mid:PAL[0], sub:PAL[0]};
+let selP={i:PAL[0], e:PAL[0], nv:PAL[0], type:PAL[0], nsa:PAL[0], mid:PAL[0], sub:PAL[0], cp:PAL[0]};
 
 function checkDefaults() {
   const defI = [{name:"월급",color:"#ffb3ba"},{name:"부수입",color:"#baffc9"}];
@@ -1146,6 +1185,8 @@ function checkDefaults() {
           {name:"기타", color:"#e6e6fa"}
       ];
   }
+  // 공동 부채 초기화
+  if(!appData.joint.cpLiabs || !Array.isArray(appData.joint.cpLiabs)) appData.joint.cpLiabs = [];
 }
 
 function gLgData(y,m){ if(!lgD[y])lgD[y]={}; if(!lgD[y][m])lgD[y][m]={salary:"",memos:{}}; return lgD[y][m]; }
@@ -1195,7 +1236,7 @@ function gCpD(y,m){
   if(!appData.joint.cp[y]) appData.joint.cp[y] = {};
   if(!appData.joint.cp[y][m]) {
       appData.joint.cp[y][m] = {
-          depZ: "", depJ: "", doneZ: false, doneJ: false,
+          depZ: "", depJ: "", carryOver: "", doneZ: false, doneJ: false,
           ledger: [], dutch: []
       };
   }
@@ -1217,13 +1258,13 @@ function bPal(tp){
   });
 }
 function bChips(tp){
-  const cats=tp==="i"?iCats:tp==="e"?eCats:nvCats;
+  const cats=tp==="i"?iCats:tp==="e"?eCats:tp==="cp"?appData.joint.cpCats:nvCats;
   const w=document.getElementById(tp+"chips");if(!w)return;w.innerHTML="";
   cats.forEach((c,i)=>{
     const ch=document.createElement("div");ch.className="chip";ch.style.background=c.color;
     ch.innerHTML=c.name+`<span class="xd" onclick="remCat('${tp}',${i})">✕</span>`;w.appendChild(ch);
   });
-  document.getElementById(tp+"cnt").textContent=cats.length+" / 20";
+  if(document.getElementById(tp+"cnt")) document.getElementById(tp+"cnt").textContent=cats.length+" / 20";
 }
 function addCat(tp){
   const cats = tp==="i"?iCats:tp==="e"?eCats:nvCats;
@@ -1236,8 +1277,12 @@ function addCat(tp){
   if(tp==="i")rInc(); else if(tp==="e")rExp(); else rNVTotal();
 }
 function remCat(tp,i){
-  const cats=tp==="i"?iCats:tp==="e"?eCats:nvCats;
-  if(confirm("삭제할까요?")){ cats.splice(i,1); saveToFB(tp+"Cats", cats); if(tp==="i")rInc(); else if(tp==="e")rExp(); else rNVTotal(); }
+  const cats=tp==="i"?iCats:tp==="e"?eCats:tp==="cp"?appData.joint.cpCats:nvCats;
+  if(confirm("삭제할까요?")){ 
+      cats.splice(i,1); 
+      if(tp==="cp") { sCpD(); rCp(); } 
+      else { saveToFB(tp+"Cats", cats); if(tp==="i")rInc(); else if(tp==="e")rExp(); else rNVTotal(); }
+  }
 }
 const cc=(cats,n)=>{if(!cats)return "#fff";const c=cats.find(x=>x.name===n);return c?c.color:"#fff";};
 const getCatOptionsHtml=(cats, s)=>{ let h=""; let f=false; (cats||[]).forEach(c=>{ h+=`<option value="${c.name}" ${c.name===s?"selected":""}>${c.name}</option>`; if(c.name===s)f=true;}); if(s&&!f)h+=`<option value="${s}" selected>${s}</option>`; else if(!s) h=`<option value="" selected>선택</option>`+h; return h; };
@@ -1306,7 +1351,6 @@ function buildYM(yid,mid,cy,cm){
 }
 
 /* ================= 0: 가계부 탭 ================= */
-// ... (0, 1, 2, 3, 4, 5, 6 탭 로직은 원본 그대로 유지) ...
 function updateLgSalary(v){gLgData(lgY,lgM).salary=v;sLg();rLedger();}
 function updateLgMemo(k,v){gLgData(lgY,lgM).memos=gLgData(lgY,lgM).memos||{};gLgData(lgY,lgM).memos[k]=v;sLg();}
 function updateLgGoal(el){
@@ -1373,6 +1417,7 @@ function rLedger(){
   });
 }
 
+/* ================= 1: 부수입 / 2: 지출 ================= */
 function imc(){iY=parseInt(document.getElementById("iy").value)||CUR_Y;iM=parseInt(document.getElementById("im").value)||CUR_M;rInc();}
 function emc(){eY=parseInt(document.getElementById("ey").value)||CUR_Y;eM=parseInt(document.getElementById("em").value)||CUR_M;rExp();}
 function sortDated(tp){let d=tp==='i'?gID(iY,iM):gED(eY,eM); d.dated.sort((a,b)=>(parseInt(a.date.replace(/[^0-9]/g,''))||0)-(parseInt(b.date.replace(/[^0-9]/g,''))||0)); if(tp==='i'){sI();rInc();}else{sE();rExp();}}
@@ -1451,7 +1496,7 @@ function rExp(){
 window.aEF=()=>{gED(eY,eM).fixed.push({cat:eCats[0]?eCats[0].name:"",desc:"",amount:"",over:"",exclude:false});sE();rExp();};
 window.aED=()=>{gED(eY,eM).dated.push({date:"",cat:eCats[0]?eCats[0].name:"",desc:"",amount:"",over:"",exclude:false});sE();rExp();};
 
-// 랜덤스쿱
+/* ================= 3: 랜덤스쿱 ================= */
 const SC_RULES_DEF=()=>[["🍅 달성률 10%당 1스쿱🥄"],["🍅 네잎클로버 파츠는 한 번 더!🍀"],["🍅 100% 달성시 한 번 더! ✨"],["🍅 큰 파츠 개당 1,000원💎"],["🍅 주간 총 금액 다음 주에 매수! 💸"]];
 function gScRules(y,m){
   if(!scD[y])scD[y]={}; if(!scD[y][m])scD[y][m]={};
@@ -1532,7 +1577,7 @@ window.updateScWeekTotal=(wk,val)=>{
   document.getElementById("scpill").textContent="월 총 ₩"+fmt(totalAll);
 };
 
-// 투자
+/* ================= 4: 저축/투자 ================= */
 function onNP(){nvY=parseInt(document.getElementById("nvy").value)||CUR_Y;nvM=parseInt(document.getElementById("nvm").value)||CUR_M;rNVTotal();}
 window.calcNvAutoSum = () => {
   const d = gNvD(nvY, nvM);
@@ -1589,7 +1634,7 @@ function rNVTotal(){
   });
 }
 
-// 자산부채
+/* ================= 5: 자산 및 부채 ================= */
 window.updateAsTotals = () => {
   const d = gAsD();
   let assets = 0, liabs = 0;
@@ -1866,10 +1911,22 @@ window.rZzanpomatoDashboard = function() {
 
 
 /* ================= 🍅🥔 커플 통장 탭 로직 ================= */
+// 카테고리 관리 추가
+window.addCpCat = function() {
+    const name = document.getElementById("cpcni").value.trim();
+    if(!name){alert("이름을 입력해주세요!");return;}
+    if(appData.joint.cpCats.length>=20){alert("최대 20개!");return;}
+    appData.joint.cpCats.push({name:name, color:selP.cp});
+    sCpD();
+    document.getElementById("cpcni").value="";
+    rCp();
+};
+
 window.updateCpDep = function() {
     const d = gCpD(cpY, cpM);
     d.depZ = document.getElementById("cp_dep_z").value.replace(/[^0-9]/g, '');
     d.depJ = document.getElementById("cp_dep_j").value.replace(/[^0-9]/g, '');
+    d.carryOver = document.getElementById("cp_carry_over").value.replace(/[^0-9]/g, '');
     d.doneZ = document.getElementById("cp_done_z").checked;
     d.doneJ = document.getElementById("cp_done_j").checked;
     sCpD();
@@ -1891,13 +1948,21 @@ window.addCpDutch = function() {
     rCp();
 };
 
+// 공동 부채 추가 (전역 관리)
+window.addCpLiab = function() {
+    appData.joint.cpLiabs.push({ desc: "", total: "", remain: "" });
+    sCpD();
+    rCp();
+};
+
 function calcCpBal() {
     const d = gCpD(cpY, cpM);
     
     // 입금 계산 (완료 체크된 것만)
     let zIn = d.doneZ ? (+d.depZ||0) : 0;
     let jIn = d.doneJ ? (+d.depJ||0) : 0;
-    let totalIn = zIn + jIn;
+    let carry = +(d.carryOver||0);
+    let totalIn = zIn + jIn + carry;
 
     // 지출 계산
     let totalExp = 0;
@@ -1919,11 +1984,16 @@ window.rCp = function() {
     cpY = parseInt(document.getElementById("cp_y").value) || CUR_Y; 
     cpM = parseInt(document.getElementById("cp_m").value) || CUR_M;
     checkDefaults();
+    
+    bPal("cp");
+    bChips("cp");
+
     const d = gCpD(cpY, cpM);
 
     // 입금 영역 바인딩
     document.getElementById("cp_dep_z").value = fmtStr(d.depZ);
     document.getElementById("cp_dep_j").value = fmtStr(d.depJ);
+    document.getElementById("cp_carry_over").value = fmtStr(d.carryOver);
     document.getElementById("cp_done_z").checked = d.doneZ || false;
     document.getElementById("cp_done_j").checked = d.doneJ || false;
 
@@ -1959,6 +2029,18 @@ window.rCp = function() {
                 </label>
             </td>
             <td style="text-align:center;"><button class="bsm" style="background:#fff; color:#2e7d32; border-color:#2e7d32;" onclick="gCpD(${cpY},${cpM}).dutch.splice(${i},1); sCpD(); rCp();">✕</button></td>
+        </tr>`;
+    });
+
+    // 공동 할부/부채(전역) 테이블 바인딩
+    const liabT = document.getElementById("cp_liab_tb");
+    liabT.innerHTML = "";
+    appData.joint.cpLiabs.forEach((r, i) => {
+        liabT.innerHTML += `<tr>
+            <td><input value="${r.desc||""}" placeholder="예: LG그램 노트북 12개월" style="width:100%; font-family:'Poor Story',cursive; font-size:13px; border:none; outline:none; background:transparent;" oninput="appData.joint.cpLiabs[${i}].desc=this.value; sCpD();"></td>
+            <td><input value="${fmtStr(r.total)}" style="width:100%; text-align:right; font-weight:700; font-family:'Poor Story',cursive; font-size:13px; border:none; outline:none; background:transparent; color:#e8453c;" oninput="appData.joint.cpLiabs[${i}].total=fmtInp(this); sCpD();"></td>
+            <td><input value="${fmtStr(r.remain)}" placeholder="할부 원금" style="width:100%; text-align:right; font-weight:700; font-family:'Poor Story',cursive; font-size:13px; border:none; outline:none; background:transparent; color:#e8453c;" oninput="appData.joint.cpLiabs[${i}].remain=fmtInp(this); sCpD();"></td>
+            <td style="text-align:center;"><button class="bsm" style="background:#fff; color:#e8453c; border-color:#e8453c;" onclick="appData.joint.cpLiabs.splice(${i},1); sCpD(); rCp();">✕</button></td>
         </tr>`;
     });
 
@@ -2074,7 +2156,7 @@ window.saveForSNS = function(targetId, fileName) {
   const target = document.getElementById(targetId);
   if(!target) return;
   
-  const hideEls = target.querySelectorAll('.sav, .bsm, .arb, .cac, .xd, #cat_mgmt, .car, select.sc, input[type="checkbox"]');
+  const hideEls = target.querySelectorAll('.sav, .bsm, .arb, .cac, .xd, #cat_mgmt, #cp_cat_mgmt, .car, select.sc, input[type="checkbox"]');
   const originalDisplays = [];
   hideEls.forEach(el => {
     originalDisplays.push(el.style.display);
