@@ -823,22 +823,31 @@ input.ti:focus{border-color:var(--main-color);}
           </div>
         </div>
 
-        <!-- ★ 이월 및 보유 잔액 입력 (신규) -->
-        <div style="background:#fff; border:2px solid var(--sub-color); border-radius:12px; padding:12px; display:flex; align-items:center; gap:12px; margin-bottom:16px;">
-          <div style="font-size:30px;">🏦</div>
-          <div style="flex:1;">
-            <div style="font-size:12px; font-weight:700; color:var(--text-muted); margin-bottom:4px;">이월 및 기존 보유 잔액</div>
-            <input class="ti" id="cp_carry_over" style="padding:4px 8px; font-size:16px; font-weight:700; width:100%; color:var(--text-dark);" placeholder="기존에 모아둔 금액이나 지난달 남은 금액 입력" oninput="fmtInp(this); updateCpDep();">
+        <!-- ★ 이월 및 이자 입력 (수정) -->
+        <div style="background:#fff; border:2px solid var(--sub-color); border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:12px; margin-bottom:16px;">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div style="font-size:30px;">🏦</div>
+            <div style="flex:1;">
+              <div style="font-size:12px; font-weight:700; color:var(--text-muted); margin-bottom:4px;">이월 및 기존 보유 잔액</div>
+              <input class="ti" id="cp_carry_over" style="padding:4px 8px; font-size:16px; font-weight:700; width:100%; color:var(--text-dark);" placeholder="기존에 모아둔 금액이나 지난달 남은 금액 입력" oninput="fmtInp(this); updateCpDep();">
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div style="font-size:30px;">🌱</div>
+            <div style="flex:1;">
+              <div style="font-size:12px; font-weight:700; color:#2e7d32; margin-bottom:4px;">파킹통장 이자</div>
+              <input class="ti" id="cp_interest" style="padding:4px 8px; font-size:16px; font-weight:700; width:100%; color:#2e7d32; border-color:#baffc9; background:#fafffa;" placeholder="이번 달 붙은 이자 입력" oninput="fmtInp(this); updateCpDep();">
+            </div>
           </div>
         </div>
 
         <div style="display:flex; justify-content:space-between; align-items:center; background:var(--sub-bg); padding:16px; border-radius:12px; border:2px dashed var(--main-color);">
-          <div style="font-size:14px; font-weight:700; color:var(--text-dark);">현재 통장 실 잔액<br><span style="font-size:11px; color:var(--text-muted); font-weight:normal;">(보유잔액 + 총 입금 - 지출 - 정산완료)</span></div>
+          <div style="font-size:14px; font-weight:700; color:var(--text-dark);">현재 통장 실 잔액<br><span style="font-size:11px; color:var(--text-muted); font-weight:normal;">(보유잔액 + 이자 + 총 입금 - 지출)</span></div>
           <div style="font-size:28px; font-weight:700; color:var(--main-color);" id="cp_total_bal">₩0</div>
         </div>
       </div>
 
-      <!-- ★ 커플 통장 분류 관리 (신규) -->
+      <!-- ★ 커플 통장 분류 관리 -->
       <div class="cm" id="cp_cat_mgmt">
         <h3>🏷 커플 통장 분류 관리 <span style="font-size:11px;color:var(--text-muted);">(최대 20개)</span></h3>
         <div class="cw" id="cp_chips"></div>
@@ -873,28 +882,7 @@ input.ti:focus{border-color:var(--main-color);}
         </div>
       </div>
 
-      <!-- 3. 대리 결제 정산소 (더치페이) -->
-      <div class="ws" style="border-color:#baffc9; background:#fafffa;">
-        <div class="stit">
-          <h3 style="font-size:16px; color:#2e7d32;">💸 대리 결제 정산소</h3>
-          <div style="margin-left:auto; font-size:11px; color:#2e7d32; font-weight:700;">내 카드로 긁고 통장에서 빼가기!</div>
-        </div>
-        <div class="dtw" style="overflow-x:auto; border-color:#baffc9;">
-          <table class="dt" style="min-width:540px;">
-            <thead style="background:#e8f5e9;"><tr>
-              <th style="width:90px; color:#2e7d32;">결제자</th>
-              <th style="color:#2e7d32;">어디서 결제했나요?</th>
-              <th style="width:120px; color:#2e7d32;">금액 (원)</th>
-              <th style="width:90px; color:#2e7d32;">정산상태</th>
-              <th style="width:44px; color:#2e7d32;">삭제</th>
-            </tr></thead>
-            <tbody id="cp_dutch_tb"></tbody>
-          </table>
-          <button class="arb" style="border-top-color:#baffc9; background:#fff; color:#2e7d32;" onclick="addCpDutch()">＋ 대리 결제 내역 추가</button>
-        </div>
-      </div>
-
-      <!-- ★ 4. 공동 할부/부채 관리 (신규) -->
+      <!-- ★ 3. 공동 할부/부채 관리 -->
       <div class="ws" style="border-color:#ffb3ba; background:#fff9f9;">
         <div class="stit">
           <h3 style="font-size:16px; color:#e8453c;">💳 공동 할부 / 부채 관리</h3>
@@ -1230,24 +1218,22 @@ function gAsD(){
   return d; 
 }
 
-// 커플통장 데이터 getter
+// 커플통장 데이터 getter (이자 interest 추가 및 dutch 제거)
 function gCpD(y,m){
   if(!appData.joint.cp) appData.joint.cp = {};
   if(!appData.joint.cp[y]) appData.joint.cp[y] = {};
   if(!appData.joint.cp[y][m]) {
       appData.joint.cp[y][m] = {
-          depZ: "", depJ: "", carryOver: "", doneZ: false, doneJ: false,
-          ledger: [], dutch: []
+          depZ: "", depJ: "", carryOver: "", interest: "", doneZ: false, doneJ: false,
+          ledger: []
       };
   }
   appData.joint.cp[y][m].ledger = ensureArr(appData.joint.cp[y][m].ledger);
-  appData.joint.cp[y][m].dutch = ensureArr(appData.joint.cp[y][m].dutch);
   return appData.joint.cp[y][m];
 }
 function sCpD() {
   if(isFirebaseLoaded) db.ref("users/" + mySyncKey + "/joint").set(appData.joint);
 }
-
 
 function bPal(tp){
   const row=document.getElementById(tp+"pal");if(!row)return;row.innerHTML="";
@@ -1911,7 +1897,7 @@ window.rZzanpomatoDashboard = function() {
 
 
 /* ================= 🍅🥔 커플 통장 탭 로직 ================= */
-// 카테고리 관리 추가
+// 카테고리 관리
 window.addCpCat = function() {
     const name = document.getElementById("cpcni").value.trim();
     if(!name){alert("이름을 입력해주세요!");return;}
@@ -1927,6 +1913,7 @@ window.updateCpDep = function() {
     d.depZ = document.getElementById("cp_dep_z").value.replace(/[^0-9]/g, '');
     d.depJ = document.getElementById("cp_dep_j").value.replace(/[^0-9]/g, '');
     d.carryOver = document.getElementById("cp_carry_over").value.replace(/[^0-9]/g, '');
+    d.interest = document.getElementById("cp_interest").value.replace(/[^0-9]/g, '');
     d.doneZ = document.getElementById("cp_done_z").checked;
     d.doneJ = document.getElementById("cp_done_j").checked;
     sCpD();
@@ -1941,13 +1928,6 @@ window.addCpLedger = function() {
     rCp();
 };
 
-window.addCpDutch = function() {
-    const d = gCpD(cpY, cpM);
-    d.dutch.push({ who: "짠토", desc: "", amount: "", settled: false });
-    sCpD();
-    rCp();
-};
-
 // 공동 부채 추가 (전역 관리)
 window.addCpLiab = function() {
     appData.joint.cpLiabs.push({ desc: "", total: "", remain: "" });
@@ -1958,23 +1938,18 @@ window.addCpLiab = function() {
 function calcCpBal() {
     const d = gCpD(cpY, cpM);
     
-    // 입금 계산 (완료 체크된 것만)
+    // 입금 및 이자 계산 (완료 체크된 것만 입금액에 산입, 이월금과 이자는 상시 합산)
     let zIn = d.doneZ ? (+d.depZ||0) : 0;
     let jIn = d.doneJ ? (+d.depJ||0) : 0;
     let carry = +(d.carryOver||0);
-    let totalIn = zIn + jIn + carry;
+    let interest = +(d.interest||0);
+    let totalIn = zIn + jIn + carry + interest;
 
     // 지출 계산
     let totalExp = 0;
     d.ledger.forEach(r => totalExp += (+r.amount||0));
-    
-    // 정산 완료된 더치페이 계산 (통장에서 빠져나간 돈)
-    let totalSettled = 0;
-    d.dutch.forEach(r => {
-        if(r.settled) totalSettled += (+r.amount||0);
-    });
 
-    let currentBal = totalIn - totalExp - totalSettled;
+    let currentBal = totalIn - totalExp;
     
     document.getElementById("cp_total_bal").textContent = "₩" + fmt(currentBal);
     document.getElementById("cp_ledger_tot").textContent = "₩" + fmt(totalExp);
@@ -1990,10 +1965,11 @@ window.rCp = function() {
 
     const d = gCpD(cpY, cpM);
 
-    // 입금 영역 바인딩
+    // 입금 및 이자 영역 바인딩
     document.getElementById("cp_dep_z").value = fmtStr(d.depZ);
     document.getElementById("cp_dep_j").value = fmtStr(d.depJ);
     document.getElementById("cp_carry_over").value = fmtStr(d.carryOver);
+    document.getElementById("cp_interest").value = fmtStr(d.interest);
     document.getElementById("cp_done_z").checked = d.doneZ || false;
     document.getElementById("cp_done_j").checked = d.doneJ || false;
 
@@ -2007,28 +1983,6 @@ window.rCp = function() {
             <td><input value="${r.desc||""}" style="width:100%; font-family:'Poor Story',cursive; font-size:13px; border:none; outline:none; background:transparent;" oninput="gCpD(${cpY},${cpM}).ledger[${i}].desc=this.value; sCpD();"></td>
             <td><input value="${fmtStr(r.amount)}" style="width:100%; text-align:right; font-family:'Poor Story',cursive; font-size:13px; border:none; outline:none; background:transparent;" oninput="gCpD(${cpY},${cpM}).ledger[${i}].amount=fmtInp(this); sCpD(); calcCpBal();"></td>
             <td style="text-align:center;"><button class="bsm" onclick="gCpD(${cpY},${cpM}).ledger.splice(${i},1); sCpD(); rCp();">✕</button></td>
-        </tr>`;
-    });
-
-    // 대리 결제(더치페이) 테이블 바인딩
-    const dT = document.getElementById("cp_dutch_tb");
-    dT.innerHTML = "";
-    d.dutch.forEach((r, i) => {
-        let isSettled = r.settled || false;
-        let opac = isSettled ? "0.5" : "1";
-        dT.innerHTML += `<tr style="opacity:${opac};">
-            <td><select style="width:100%; font-family:'Poor Story',cursive; font-size:13px; font-weight:700; border:none; outline:none; background:transparent; color:${r.who==='짠토'?'#e8453c':'#a67c52'};" onchange="gCpD(${cpY},${cpM}).dutch[${i}].who=this.value; sCpD(); rCp();">
-                <option value="짠토" ${r.who==='짠토'?'selected':''}>🍅 짠토</option>
-                <option value="짠감" ${r.who==='짠감'?'selected':''}>🥔 짠감</option>
-            </select></td>
-            <td><input value="${r.desc||""}" placeholder="결제 내용" style="width:100%; font-family:'Poor Story',cursive; font-size:13px; border:none; outline:none; background:transparent;" oninput="gCpD(${cpY},${cpM}).dutch[${i}].desc=this.value; sCpD();"></td>
-            <td><input value="${fmtStr(r.amount)}" style="width:100%; text-align:right; font-weight:700; font-family:'Poor Story',cursive; font-size:13px; border:none; outline:none; background:transparent; color:${r.who==='짠토'?'#e8453c':'#a67c52'};" oninput="gCpD(${cpY},${cpM}).dutch[${i}].amount=fmtInp(this); sCpD(); calcCpBal();"></td>
-            <td style="text-align:center;">
-                <label style="font-size:11px; font-weight:700; color:#2e7d32; cursor:pointer;">
-                    <input type="checkbox" ${isSettled?'checked':''} onchange="gCpD(${cpY},${cpM}).dutch[${i}].settled=this.checked; sCpD(); rCp();" style="accent-color:#2e7d32;"> 정산완료
-                </label>
-            </td>
-            <td style="text-align:center;"><button class="bsm" style="background:#fff; color:#2e7d32; border-color:#2e7d32;" onclick="gCpD(${cpY},${cpM}).dutch.splice(${i},1); sCpD(); rCp();">✕</button></td>
         </tr>`;
     });
 
