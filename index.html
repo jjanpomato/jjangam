@@ -768,7 +768,7 @@ input.ti:focus{border-color:var(--main-color);}
         </div>
         <!-- 이달의 잉여 자금 -->
         <div class="ws" style="background:var(--sub-bg);">
-          <div class="wt" style="color:var(--main-color);">✨ 이달의 잉여 자금 (수입-지출)</div>
+          <div class="wt" style="color:var(--main-color);">✨ 이달의 잉여 자금 (수입-지출-저축)</div>
           <div style="font-size:26px; font-weight:700; color:var(--main-color); margin-top:10px;" id="jp_m_bal">₩0</div>
           <div style="font-size:12px; color:var(--text-muted); margin-top:6px;">두 분이 이번 달에 남긴 순수 여윳돈입니다!</div>
         </div>
@@ -1142,7 +1142,7 @@ const sSc=()=>saveToFB("scD", scD);
 const sAs=()=>saveToFB("asD", asD);
 
 /* ================= 개인 탭 공통 로직 ================= */
-const _d = new Date(); const CUR_Y = 2026; const CUR_M = 8;
+const _d = new Date(); const CUR_Y = _d.getFullYear(); const CUR_M = _d.getMonth() + 1;
 let iY=CUR_Y,iM=CUR_M, eY=CUR_Y,eM=CUR_M, nvY=CUR_Y,nvM=CUR_M, scY=CUR_Y,scM=CUR_M, lgY=CUR_Y,lgM=CUR_M, rY=CUR_Y, jpY=CUR_Y, jpM=CUR_M, cpY=CUR_Y, cpM=CUR_M;
 let iFil_state="전체", eFil_state="전체";
 let scWk=0, scRat="1/1"; 
@@ -1388,7 +1388,7 @@ function rLedger(){
   row("저축/투자", nT, "inv");
   row("총지출", eT+nT, "tot_exp", false, "over");
   grp("");
-  const bal=(iT+sal)-eT;
+  const bal=(iT+sal)-eT-nT;
   row("잔액", bal, "bal", false, bal<0?'over':'safe');
   
   document.getElementById("lgbal").textContent="₩"+fmt(bal);
@@ -1891,7 +1891,7 @@ window.rZzanpomatoDashboard = function() {
   document.getElementById('jp_m_inv_z').textContent = '₩' + fmt(sZ.inv);
   document.getElementById('jp_m_inv_j').textContent = '₩' + fmt(sJ.inv);
 
-  let bal = (sZ.inc + sJ.inc) - (sZ.exp + sJ.exp);
+  let bal = (sZ.inc + sJ.inc) - (sZ.exp + sJ.exp) - (sZ.inv + sJ.inv);
   document.getElementById('jp_m_bal').textContent = '₩' + fmt(bal);
 };
 
@@ -2014,7 +2014,7 @@ function rReport() {
     mInc.push(stat.inc); yInc+=stat.inc;
     mExp.push(stat.exp); yExp+=stat.exp;
     mSav.push(stat.inv); ySav+=stat.inv;
-    mBal.push(stat.inc - stat.exp); yBal+=(stat.inc - stat.exp);
+    mBal.push(stat.inc - stat.exp - stat.inv); yBal+=(stat.inc - stat.exp - stat.inv);
   }
 
   document.getElementById("r_tot_inc").textContent="₩"+fmt(yInc);
